@@ -1,8 +1,8 @@
 # Frequenz Reporting API Client
 
-[![Build Status](https://github.com/frequenz-floss/frequenz-clinet-reporting-python/actions/workflows/ci.yaml/badge.svg)](https://github.com/frequenz-floss/frequenz-clinet-reporting-python/actions/workflows/ci.yaml)
+[![Build Status](https://github.com/frequenz-floss/frequenz-client-reporting-python/actions/workflows/ci.yaml/badge.svg)](https://github.com/frequenz-floss/frequenz-client-reporting-python/actions/workflows/ci.yaml)
 [![PyPI Package](https://img.shields.io/pypi/v/frequenz-client-reporting)](https://pypi.org/project/frequenz-client-reporting/)
-[![Docs](https://img.shields.io/badge/docs-latest-informational)](https://frequenz-floss.github.io/frequenz-clinet-reporting-python/)
+[![Docs](https://img.shields.io/badge/docs-latest-informational)](https://frequenz-floss.github.io/frequenz-client-reporting-python/)
 
 ## Introduction
 
