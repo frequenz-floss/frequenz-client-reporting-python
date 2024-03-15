@@ -29,6 +29,8 @@ requires-python = ">= 3.11, < 4"
 # TODO(cookiecutter): Remove and add more dependencies if appropriate
 dependencies = [
   "typing-extensions >= 4.5.0, < 5",
+  "frequenz-api-reporting >= 0.1.1, < 1",
+  "frequenz-client-common @ git+https://github.com/frequenz-floss/frequenz-client-common-python.git@v0.x.x",
 ]
 dynamic = ["version"]
 
