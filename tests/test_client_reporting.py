@@ -2,17 +2,42 @@
 # Copyright © 2024 Frequenz Energy-as-a-Service GmbH
 
 """Tests for the frequenz.client.reporting package."""
+from typing import Generator
+from unittest.mock import MagicMock, patch
+
 import pytest
 
-from frequenz.client.reporting import delete_me
+from frequenz.client.reporting import ReportingClient
+from frequenz.client.reporting._client import ComponentsDataPage
 
 
-def test_client_reporting_succeeds() -> None:  # TODO(cookiecutter): Remove
-    """Test that the delete_me function succeeds."""
-    assert delete_me() is True
+@pytest.fixture
+def mock_channel() -> Generator[MagicMock, None, None]:
+    """Fixture for grpc.aio.insecure_channel."""
+    with patch("grpc.aio.insecure_channel") as mock:
+        yield mock
 
 
-def test_client_reporting_fails() -> None:  # TODO(cookiecutter): Remove
-    """Test that the delete_me function fails."""
-    with pytest.raises(RuntimeError, match="This function should be removed!"):
-        delete_me(blow_up=True)
+@pytest.mark.asyncio
+async def test_client_initialization(mock_channel: MagicMock) -> None:
+    """Test that the client initializes the channel."""
+    client = ReportingClient("localhost:50051")  # noqa: F841
+    mock_channel.assert_called_once_with("localhost:50051")
+
+
+def test_components_data_page_is_empty_true() -> None:
+    """Test that the is_empty method returns True when the page is empty."""
+    data_pb = MagicMock()
+    data_pb.microgrids = []
+    page = ComponentsDataPage(_data_pb=data_pb)
+    assert page.is_empty() is True
+
+
+def test_components_data_page_is_empty_false() -> None:
+    """Test that the is_empty method returns False when the page is not empty."""
+    data_pb = MagicMock()
+    data_pb.microgrids = [MagicMock()]
+    data_pb.microgrids[0].components = [MagicMock()]
+    data_pb.microgrids[0].components[0].metric_samples = [MagicMock()]
+    page = ComponentsDataPage(_data_pb=data_pb)
+    assert page.is_empty() is False

@@ -1,25 +1,12 @@
 # License: MIT
 # Copyright © 2024 Frequenz Energy-as-a-Service GmbH
 
-"""Reporting API client for Python.
+"""Client to connect to the Reporting API.
 
-TODO(cookiecutter): Add a more descriptive module description.
+This package provides a low-level interface for interacting with the reporting API.
 """
 
 
-# TODO(cookiecutter): Remove this function
-def delete_me(*, blow_up: bool = False) -> bool:
-    """Do stuff for demonstration purposes.
+from ._client import ReportingClient
 
-    Args:
-        blow_up: If True, raise an exception.
-
-    Returns:
-        True if no exception was raised.
-
-    Raises:
-        RuntimeError: if blow_up is True.
-    """
-    if blow_up:
-        raise RuntimeError("This function should be removed!")
-    return True
+__all__ = ["ReportingClient"]

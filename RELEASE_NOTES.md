@@ -2,7 +2,8 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+This release introduces the initial version of the Reporting API client with support for
+retrieving single metric historical data for a single component.
 
 ## Upgrading
 
@@ -10,7 +11,18 @@
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+* Introducing the initial version of the Reporting API client, streamlined for
+retrieving single metric historical data for a single component. It incorporates
+pagination handling and utilizes a wrapper data class that retains the raw
+protobuf response while offering transformation capabilities limited here
+to generators of structured data representation via named tuples.
+
+* Current limitations include a single metric focus with plans for extensibility,
+ongoing development for states and bounds integration, as well as support for
+service-side features like resampling, streaming, and formula aggregations.
+
+* Code examples are provided to guide users through the basic usage of the client.
+
 
 ## Bug Fixes
 
