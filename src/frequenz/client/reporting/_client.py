@@ -117,12 +117,12 @@ class ReportingClient:
         self._stub = ReportingStub(self._grpc_channel)
 
     # pylint: disable=too-many-arguments
-    async def iterate_single_metric(
+    async def iterate_single_component(
         self,
         *,
         microgrid_id: int,
         component_id: int,
-        metric: Metric,
+        metrics: Metric | list[Metric],
         start_dt: datetime,
         end_dt: datetime,
         page_size: int = 1000,
@@ -132,7 +132,7 @@ class ReportingClient:
         Args:
             microgrid_id: The microgrid ID.
             component_id: The component ID.
-            metric: The metric name.
+            metrics: The metric name or list of metric names.
             start_dt: The start date and time.
             end_dt: The end date and time.
             page_size: The page size.
@@ -144,7 +144,7 @@ class ReportingClient:
         """
         async for page in self._iterate_components_data_pages(
             microgrid_components=[(microgrid_id, [component_id])],
-            metrics=[metric],
+            metrics=[metrics] if isinstance(metrics, Metric) else metrics,
             start_dt=start_dt,
             end_dt=end_dt,
             page_size=page_size,

@@ -98,8 +98,6 @@ async def run(
 
     metrics = [Metric[mn] for mn in metric_names]
 
-    assert len(metrics) == 1, "Only single metric is supported"
-
     def data_iter() -> AsyncIterator[MetricSample]:
         """Iterate over single metric.
 
@@ -108,10 +106,10 @@ async def run(
         Returns:
             Iterator over single metric samples
         """
-        return client.iterate_single_metric(
+        return client.iterate_single_component(
             microgrid_id=microgrid_id,
             component_id=component_id,
-            metric=metrics[0],
+            metrics=metrics,
             start_dt=start_dt,
             end_dt=end_dt,
             page_size=page_size,
