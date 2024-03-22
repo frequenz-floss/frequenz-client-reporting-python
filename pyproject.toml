@@ -30,7 +30,7 @@ requires-python = ">= 3.11, < 4"
 dependencies = [
   "typing-extensions >= 4.5.0, < 5",
   "frequenz-api-reporting >= 0.1.1, < 1",
-  "frequenz-client-common @ git+https://github.com/frequenz-floss/frequenz-client-common-python.git@v0.x.x",
+  "frequenz-client-common == 0.1.0",
 ]
 dynamic = ["version"]
 
