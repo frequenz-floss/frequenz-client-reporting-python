@@ -31,9 +31,6 @@ from google.protobuf.timestamp_pb2 import Timestamp as PBTimestamp
 
 # pylint: enable=no-name-in-module
 
-Sample = namedtuple("Sample", ["timestamp", "value"])
-"""Type for a sample of a time series."""
-
 MetricSample = namedtuple(
     "MetricSample", ["timestamp", "microgrid_id", "component_id", "metric", "value"]
 )
@@ -129,7 +126,7 @@ class ReportingClient:
         start_dt: datetime,
         end_dt: datetime,
         page_size: int = 1000,
-    ) -> AsyncIterator[Sample]:
+    ) -> AsyncIterator[MetricSample]:
         """Iterate over the data for a single metric.
 
         Args:
@@ -153,7 +150,7 @@ class ReportingClient:
             page_size=page_size,
         ):
             for entry in page.iterate_metric_samples():
-                yield Sample(timestamp=entry.timestamp, value=entry.value)
+                yield entry
 
     # pylint: disable=too-many-arguments
     async def _iterate_components_data_pages(
