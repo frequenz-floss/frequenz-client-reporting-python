@@ -3,7 +3,7 @@
 ## Summary
 
 This release introduces the initial version of the Reporting API client with support for
-retrieving single metric historical data for a single component.
+retrieving historical metrics data for a single component.
 
 ## Upgrading
 
@@ -12,16 +12,18 @@ retrieving single metric historical data for a single component.
 ## New Features
 
 * Introducing the initial version of the Reporting API client, streamlined for
-retrieving single metric historical data for a single component. It incorporates
+retrieving historical metrics data for a single component. It incorporates
 pagination handling and utilizes a wrapper data class that retains the raw
 protobuf response while offering transformation capabilities limited here
 to generators of structured data representation via named tuples.
 
-* Current limitations include a single metric focus with plans for extensibility,
+* Current limitations include a single component focus with plans for extensibility,
 ongoing development for states and bounds integration, as well as support for
 service-side features like resampling, streaming, and formula aggregations.
 
 * Code examples are provided to guide users through the basic usage of the client.
+The example client is a simple command-line tool that retrieves historical metrics
+data for a single component and prints it to the console.
 
 
 ## Bug Fixes
