@@ -629,8 +629,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#frequenz.client.reporting.ReportingApiClient.list_multiple_microgrid_components_data" class="md-nav__link">
-    list_multiple_microgrid_components_data
+  <a href="#frequenz.client.reporting.ReportingApiClient.list_microgrid_components_data" class="md-nav__link">
+    list_microgrid_components_data
   </a>
   
 </li>
@@ -992,7 +992,7 @@
 </span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158"></a>                <span class="k">yield</span> <span class="n">entry</span>
 </span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159"></a>
 </span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160"></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">list_multiple_microgrid_components_data</span><span class="p">(</span>
+</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">list_microgrid_components_data</span><span class="p">(</span>
 </span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162"></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163"></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a>        <span class="n">microgrid_components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
@@ -1471,16 +1471,16 @@
 
 
 
-<h6 id="frequenz.client.reporting.ReportingApiClient.list_multiple_microgrid_components_data" class="doc doc-heading">
-          <span class="doc doc-object-name doc-function-name">list_multiple_microgrid_components_data</span>
+<h6 id="frequenz.client.reporting.ReportingApiClient.list_microgrid_components_data" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">list_microgrid_components_data</span>
 
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
-<a href="#frequenz.client.reporting.ReportingApiClient.list_multiple_microgrid_components_data" class="headerlink" title="Permanent link">¤</a></h6>
-<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">list_multiple_microgrid_components_data</span><span class="p">(</span>
+<a href="#frequenz.client.reporting.ReportingApiClient.list_microgrid_components_data" class="headerlink" title="Permanent link">¤</a></h6>
+<div class="doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">list_microgrid_components_data</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">microgrid_components</span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#list">list</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#list">list</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span><span class="p">]]],</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">metrics</span><span class="p">:</span> <span class="n"><span title="frequenz.client.common.metric.Metric">Metric</span></span> <span class="o">|</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#list">list</a></span><span class="p">[</span><span class="n"><span title="frequenz.client.common.metric.Metric">Metric</span></span><span class="p">],</span>
@@ -1714,7 +1714,7 @@
 <span class="normal"><a href="#__codelineno-0-193">193</a></span>
 <span class="normal"><a href="#__codelineno-0-194">194</a></span>
 <span class="normal"><a href="#__codelineno-0-195">195</a></span>
-<span class="normal"><a href="#__codelineno-0-196">196</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">list_multiple_microgrid_components_data</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-196">196</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">list_microgrid_components_data</span><span class="p">(</span>
 </span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162"></a>    <span class="bp">self</span><span class="p">,</span>
 </span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163"></a>    <span class="o">*</span><span class="p">,</span>
 </span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a>    <span class="n">microgrid_components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
