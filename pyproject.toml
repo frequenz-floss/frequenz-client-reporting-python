@@ -27,7 +27,7 @@ classifiers = [
 requires-python = ">= 3.11, < 4"
 dependencies = [
   "typing-extensions >= 4.5.0, < 5",
-  "frequenz-api-reporting >= 0.1.1, < 0.2",
+  "frequenz-api-reporting >= 0.1.1, < 0.3",
   "frequenz-client-common == 0.1.0",
 ]
 dynamic = ["version"]
