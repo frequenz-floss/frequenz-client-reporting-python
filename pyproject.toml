@@ -28,7 +28,7 @@ requires-python = ">= 3.11, < 4"
 dependencies = [
   "typing_extensions >= 4.6.1, < 5",
   "grpc-stubs == 1.53.0.5",
-  "frequenz-api-reporting >= 0.2.0, < 0.5",
+  "frequenz-api-reporting >= 0.2.0, < 0.6",
   "frequenz-client-common >= 0.2.0, < 0.3",
   "grpcio >= 1.54.2, < 2",
   "grpcio-tools >= 1.54.2, < 2",
