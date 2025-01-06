@@ -6,11 +6,11 @@
 
 ## Upgrading
 
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ## New Features
 
-* Adds new method `receive_aggregated_data` to receive microgrid component data
-  aggregated by user-defined formulae.
+<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ## Bug Fixes
 
