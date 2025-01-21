@@ -24,7 +24,12 @@ def main() -> None:
         help="URL of the Reporting service",
         default="localhost:50051",
     )
-    parser.add_argument("--mid", type=int, help="Microgrid ID", required=True)
+    parser.add_argument(
+        "--mid",
+        type=int,
+        help="Microgrid ID",
+        required=True,
+    )
     parser.add_argument(
         "--cid",
         nargs="+",
