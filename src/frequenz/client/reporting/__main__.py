@@ -28,8 +28,8 @@ def main() -> None:
     parser.add_argument(
         "--cid",
         nargs="+",
-        type=int,
-        help="Component IDs",
+        type=str,
+        help="Component IDs or formulae",
     )
     parser.add_argument(
         "--metrics",
@@ -102,7 +102,7 @@ def main() -> None:
 async def run(
     *,
     microgrid_id: int,
-    component_id: list[int],
+    component_id: list[str],
     metric_names: list[str],
     start_dt: datetime | None,
     end_dt: datetime | None,
@@ -134,15 +134,18 @@ async def run(
     client = ReportingApiClient(service_address, key)
 
     metrics = [Metric[mn] for mn in metric_names]
-    microgrid_components = [(microgrid_id, component_id)]
 
-    def data_iter() -> AsyncIterator[MetricSample]:
+    cids = [int(cid.strip()) for cid in component_id if cid.strip().isdigit()]
+    formulas = [cid.strip() for cid in component_id if not cid.strip().isdigit()]
+    microgrid_components = [(microgrid_id, cids)]
+
+    async def data_iter() -> AsyncIterator[MetricSample]:
         """Iterate over single metric.
 
         Just a wrapper around the client method for readability.
 
-        Returns:
-            Iterator over single metric samples
+        Yields:
+            Single metric samples
         """
         resampling_period = (
             timedelta(seconds=resampling_period_s)
@@ -150,7 +153,7 @@ async def run(
             else None
         )
 
-        return client.list_microgrid_components_data(
+        async for sample in client.list_microgrid_components_data(
             microgrid_components=microgrid_components,
             metrics=metrics,
             start_dt=start_dt,
@@ -158,7 +161,21 @@ async def run(
             resampling_period=resampling_period,
             include_states=states,
             include_bounds=bounds,
-        )
+        ):
+            yield sample
+
+        for formula in formulas:
+            assert resampling_period is not None
+            for metric in metrics:
+                async for sample in client.receive_aggregated_data(
+                    microgrid_id=microgrid_id,
+                    metric=metric,
+                    aggregation_formula=formula,
+                    start=start_dt,
+                    end=end_dt,
+                    resampling_period=resampling_period,
+                ):
+                    yield sample
 
     if fmt == "iter":
         # Iterate over single metric generator
