@@ -25,7 +25,12 @@ def main() -> None:
         default="localhost:50051",
     )
     parser.add_argument("--mid", type=int, help="Microgrid ID", required=True)
-    parser.add_argument("--cid", type=int, help="Component ID", required=True)
+    parser.add_argument(
+        "--cid",
+        nargs="+",
+        type=int,
+        help="Component IDs",
+    )
     parser.add_argument(
         "--metrics",
         type=str,
@@ -97,7 +102,7 @@ def main() -> None:
 async def run(
     *,
     microgrid_id: int,
-    component_id: int,
+    component_id: list[int],
     metric_names: list[str],
     start_dt: datetime | None,
     end_dt: datetime | None,
@@ -129,6 +134,7 @@ async def run(
     client = ReportingApiClient(service_address, key)
 
     metrics = [Metric[mn] for mn in metric_names]
+    microgrid_components = [(microgrid_id, component_id)]
 
     def data_iter() -> AsyncIterator[MetricSample]:
         """Iterate over single metric.
@@ -144,9 +150,8 @@ async def run(
             else None
         )
 
-        return client.list_single_component_data(
-            microgrid_id=microgrid_id,
-            component_id=component_id,
+        return client.list_microgrid_components_data(
+            microgrid_components=microgrid_components,
             metrics=metrics,
             start_dt=start_dt,
             end_dt=end_dt,
