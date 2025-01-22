@@ -24,8 +24,18 @@ def main() -> None:
         help="URL of the Reporting service",
         default="localhost:50051",
     )
-    parser.add_argument("--mid", type=int, help="Microgrid ID", required=True)
-    parser.add_argument("--cid", type=int, help="Component ID", required=True)
+    parser.add_argument(
+        "--mid",
+        type=int,
+        help="Microgrid ID",
+        required=True,
+    )
+    parser.add_argument(
+        "--cid",
+        nargs="+",
+        type=str,
+        help="Component IDs or formulae",
+    )
     parser.add_argument(
         "--metrics",
         type=str,
@@ -97,7 +107,7 @@ def main() -> None:
 async def run(
     *,
     microgrid_id: int,
-    component_id: int,
+    component_id: list[str],
     metric_names: list[str],
     start_dt: datetime | None,
     end_dt: datetime | None,
@@ -130,13 +140,17 @@ async def run(
 
     metrics = [Metric[mn] for mn in metric_names]
 
-    def data_iter() -> AsyncIterator[MetricSample]:
+    cids = [int(cid.strip()) for cid in component_id if cid.strip().isdigit()]
+    formulas = [cid.strip() for cid in component_id if not cid.strip().isdigit()]
+    microgrid_components = [(microgrid_id, cids)]
+
+    async def data_iter() -> AsyncIterator[MetricSample]:
         """Iterate over single metric.
 
         Just a wrapper around the client method for readability.
 
-        Returns:
-            Iterator over single metric samples
+        Yields:
+            Single metric samples
         """
         resampling_period = (
             timedelta(seconds=resampling_period_s)
@@ -144,16 +158,29 @@ async def run(
             else None
         )
 
-        return client.list_single_component_data(
-            microgrid_id=microgrid_id,
-            component_id=component_id,
+        async for sample in client.list_microgrid_components_data(
+            microgrid_components=microgrid_components,
             metrics=metrics,
             start_dt=start_dt,
             end_dt=end_dt,
             resampling_period=resampling_period,
             include_states=states,
             include_bounds=bounds,
-        )
+        ):
+            yield sample
+
+        for formula in formulas:
+            assert resampling_period is not None
+            for metric in metrics:
+                async for sample in client.receive_aggregated_data(
+                    microgrid_id=microgrid_id,
+                    metric=metric,
+                    aggregation_formula=formula,
+                    start=start_dt,
+                    end=end_dt,
+                    resampling_period=resampling_period,
+                ):
+                    yield sample
 
     if fmt == "iter":
         # Iterate over single metric generator
