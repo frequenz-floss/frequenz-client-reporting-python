@@ -164,7 +164,9 @@ class AggregatedMetric:
     def sample(self) -> MetricSample:
         """Return the aggregated metric sample."""
         return MetricSample(
-            timestamp=self._data_pb.sample.sampled_at.ToDatetime(),
+            timestamp=self._data_pb.sample.sampled_at.ToDatetime().replace(
+                tzinfo=timezone.utc
+            ),
             microgrid_id=self._data_pb.aggregation_config.microgrid_id,
             component_id=self._data_pb.aggregation_config.aggregation_formula,
             metric=self._data_pb.aggregation_config.metric,

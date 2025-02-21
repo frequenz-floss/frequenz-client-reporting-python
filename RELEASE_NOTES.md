@@ -7,6 +7,7 @@
 ## Upgrading
 
 * The CLI tool is moved to dedicated folder.
+* Timestamps of aggregated (formula) requests are now timezone-aware.
 
 <!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
