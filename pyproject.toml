@@ -33,7 +33,7 @@ dependencies = [
   "grpcio >=1.66.1, < 2",
   "grpcio-tools >=1.66.1, < 2",
   "protobuf >=5.28.2, < 6",
-  "frequenz-client-base >= 0.8.0, < 0.9.0",
+  "frequenz-client-base >= 0.8.0, < 0.10.0",
 ]
 dynamic = ["version"]
 
