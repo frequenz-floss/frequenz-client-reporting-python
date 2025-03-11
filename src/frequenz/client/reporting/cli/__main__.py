@@ -104,7 +104,7 @@ def main() -> None:
 
 
 # pylint: disable=too-many-arguments, too-many-locals
-async def run(
+async def run(  # noqa: DOC502
     *,
     microgrid_id: int,
     component_id: list[str],
