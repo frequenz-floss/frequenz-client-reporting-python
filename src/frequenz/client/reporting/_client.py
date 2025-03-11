@@ -18,7 +18,7 @@ from frequenz.api.common.v1.microgrid.microgrid_pb2 import (
 from frequenz.api.reporting.v1.reporting_pb2 import (
     AggregationConfig as PBAggregationConfig,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import IncludeOptions as PBIncludeOptions
+from frequenz.api.reporting.v1.reporting_pb2 import FilterOption as PBFilterOption
 from frequenz.api.reporting.v1.reporting_pb2 import (
     MetricConnections as PBMetricConnections,
 )
@@ -327,16 +327,16 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         )
 
         incl_states = (
-            PBIncludeOptions.FilterOption.FILTER_OPTION_INCLUDE
+            PBFilterOption.FILTER_OPTION_INCLUDE
             if include_states
-            else PBIncludeOptions.FilterOption.FILTER_OPTION_EXCLUDE
+            else PBFilterOption.FILTER_OPTION_EXCLUDE
         )
         incl_bounds = (
-            PBIncludeOptions.FilterOption.FILTER_OPTION_INCLUDE
+            PBFilterOption.FILTER_OPTION_INCLUDE
             if include_bounds
-            else PBIncludeOptions.FilterOption.FILTER_OPTION_EXCLUDE
+            else PBFilterOption.FILTER_OPTION_EXCLUDE
         )
-        include_options = PBIncludeOptions(
+        include_options = PBReceiveMicrogridComponentsDataStreamRequest.IncludeOptions(
             bounds=incl_bounds,
             states=incl_states,
         )
