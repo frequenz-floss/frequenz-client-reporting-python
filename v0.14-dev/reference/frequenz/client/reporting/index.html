@@ -1304,16 +1304,16 @@
 </span><span id="__span-0-327"><a id="__codelineno-0-327" name="__codelineno-0-327"></a>        <span class="p">)</span>
 </span><span id="__span-0-328"><a id="__codelineno-0-328" name="__codelineno-0-328"></a>
 </span><span id="__span-0-329"><a id="__codelineno-0-329" name="__codelineno-0-329"></a>        <span class="n">incl_states</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-330"><a id="__codelineno-0-330" name="__codelineno-0-330"></a>            <span class="n">PBIncludeOptions</span><span class="o">.</span><span class="n">FilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_INCLUDE</span>
+</span><span id="__span-0-330"><a id="__codelineno-0-330" name="__codelineno-0-330"></a>            <span class="n">PBFilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_INCLUDE</span>
 </span><span id="__span-0-331"><a id="__codelineno-0-331" name="__codelineno-0-331"></a>            <span class="k">if</span> <span class="n">include_states</span>
-</span><span id="__span-0-332"><a id="__codelineno-0-332" name="__codelineno-0-332"></a>            <span class="k">else</span> <span class="n">PBIncludeOptions</span><span class="o">.</span><span class="n">FilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_EXCLUDE</span>
+</span><span id="__span-0-332"><a id="__codelineno-0-332" name="__codelineno-0-332"></a>            <span class="k">else</span> <span class="n">PBFilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_EXCLUDE</span>
 </span><span id="__span-0-333"><a id="__codelineno-0-333" name="__codelineno-0-333"></a>        <span class="p">)</span>
 </span><span id="__span-0-334"><a id="__codelineno-0-334" name="__codelineno-0-334"></a>        <span class="n">incl_bounds</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-335"><a id="__codelineno-0-335" name="__codelineno-0-335"></a>            <span class="n">PBIncludeOptions</span><span class="o">.</span><span class="n">FilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_INCLUDE</span>
+</span><span id="__span-0-335"><a id="__codelineno-0-335" name="__codelineno-0-335"></a>            <span class="n">PBFilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_INCLUDE</span>
 </span><span id="__span-0-336"><a id="__codelineno-0-336" name="__codelineno-0-336"></a>            <span class="k">if</span> <span class="n">include_bounds</span>
-</span><span id="__span-0-337"><a id="__codelineno-0-337" name="__codelineno-0-337"></a>            <span class="k">else</span> <span class="n">PBIncludeOptions</span><span class="o">.</span><span class="n">FilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_EXCLUDE</span>
+</span><span id="__span-0-337"><a id="__codelineno-0-337" name="__codelineno-0-337"></a>            <span class="k">else</span> <span class="n">PBFilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_EXCLUDE</span>
 </span><span id="__span-0-338"><a id="__codelineno-0-338" name="__codelineno-0-338"></a>        <span class="p">)</span>
-</span><span id="__span-0-339"><a id="__codelineno-0-339" name="__codelineno-0-339"></a>        <span class="n">include_options</span> <span class="o">=</span> <span class="n">PBIncludeOptions</span><span class="p">(</span>
+</span><span id="__span-0-339"><a id="__codelineno-0-339" name="__codelineno-0-339"></a>        <span class="n">include_options</span> <span class="o">=</span> <span class="n">PBReceiveMicrogridComponentsDataStreamRequest</span><span class="o">.</span><span class="n">IncludeOptions</span><span class="p">(</span>
 </span><span id="__span-0-340"><a id="__codelineno-0-340" name="__codelineno-0-340"></a>            <span class="n">bounds</span><span class="o">=</span><span class="n">incl_bounds</span><span class="p">,</span>
 </span><span id="__span-0-341"><a id="__codelineno-0-341" name="__codelineno-0-341"></a>            <span class="n">states</span><span class="o">=</span><span class="n">incl_states</span><span class="p">,</span>
 </span><span id="__span-0-342"><a id="__codelineno-0-342" name="__codelineno-0-342"></a>        <span class="p">)</span>
@@ -2114,16 +2114,16 @@ also does not yet support fetching bound and state data.</p>
 </span><span id="__span-0-327"><a id="__codelineno-0-327" name="__codelineno-0-327"></a>    <span class="p">)</span>
 </span><span id="__span-0-328"><a id="__codelineno-0-328" name="__codelineno-0-328"></a>
 </span><span id="__span-0-329"><a id="__codelineno-0-329" name="__codelineno-0-329"></a>    <span class="n">incl_states</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-330"><a id="__codelineno-0-330" name="__codelineno-0-330"></a>        <span class="n">PBIncludeOptions</span><span class="o">.</span><span class="n">FilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_INCLUDE</span>
+</span><span id="__span-0-330"><a id="__codelineno-0-330" name="__codelineno-0-330"></a>        <span class="n">PBFilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_INCLUDE</span>
 </span><span id="__span-0-331"><a id="__codelineno-0-331" name="__codelineno-0-331"></a>        <span class="k">if</span> <span class="n">include_states</span>
-</span><span id="__span-0-332"><a id="__codelineno-0-332" name="__codelineno-0-332"></a>        <span class="k">else</span> <span class="n">PBIncludeOptions</span><span class="o">.</span><span class="n">FilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_EXCLUDE</span>
+</span><span id="__span-0-332"><a id="__codelineno-0-332" name="__codelineno-0-332"></a>        <span class="k">else</span> <span class="n">PBFilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_EXCLUDE</span>
 </span><span id="__span-0-333"><a id="__codelineno-0-333" name="__codelineno-0-333"></a>    <span class="p">)</span>
 </span><span id="__span-0-334"><a id="__codelineno-0-334" name="__codelineno-0-334"></a>    <span class="n">incl_bounds</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-335"><a id="__codelineno-0-335" name="__codelineno-0-335"></a>        <span class="n">PBIncludeOptions</span><span class="o">.</span><span class="n">FilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_INCLUDE</span>
+</span><span id="__span-0-335"><a id="__codelineno-0-335" name="__codelineno-0-335"></a>        <span class="n">PBFilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_INCLUDE</span>
 </span><span id="__span-0-336"><a id="__codelineno-0-336" name="__codelineno-0-336"></a>        <span class="k">if</span> <span class="n">include_bounds</span>
-</span><span id="__span-0-337"><a id="__codelineno-0-337" name="__codelineno-0-337"></a>        <span class="k">else</span> <span class="n">PBIncludeOptions</span><span class="o">.</span><span class="n">FilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_EXCLUDE</span>
+</span><span id="__span-0-337"><a id="__codelineno-0-337" name="__codelineno-0-337"></a>        <span class="k">else</span> <span class="n">PBFilterOption</span><span class="o">.</span><span class="n">FILTER_OPTION_EXCLUDE</span>
 </span><span id="__span-0-338"><a id="__codelineno-0-338" name="__codelineno-0-338"></a>    <span class="p">)</span>
-</span><span id="__span-0-339"><a id="__codelineno-0-339" name="__codelineno-0-339"></a>    <span class="n">include_options</span> <span class="o">=</span> <span class="n">PBIncludeOptions</span><span class="p">(</span>
+</span><span id="__span-0-339"><a id="__codelineno-0-339" name="__codelineno-0-339"></a>    <span class="n">include_options</span> <span class="o">=</span> <span class="n">PBReceiveMicrogridComponentsDataStreamRequest</span><span class="o">.</span><span class="n">IncludeOptions</span><span class="p">(</span>
 </span><span id="__span-0-340"><a id="__codelineno-0-340" name="__codelineno-0-340"></a>        <span class="n">bounds</span><span class="o">=</span><span class="n">incl_bounds</span><span class="p">,</span>
 </span><span id="__span-0-341"><a id="__codelineno-0-341" name="__codelineno-0-341"></a>        <span class="n">states</span><span class="o">=</span><span class="n">incl_states</span><span class="p">,</span>
 </span><span id="__span-0-342"><a id="__codelineno-0-342" name="__codelineno-0-342"></a>    <span class="p">)</span>
