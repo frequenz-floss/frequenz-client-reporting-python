@@ -6,7 +6,7 @@
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+* Updates 'FilterOption' in client to be able to use reporting-api version 0.7.0
 
 ## New Features
 
