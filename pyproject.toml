@@ -31,7 +31,6 @@ dependencies = [
   "frequenz-api-reporting >= 0.7.0, < 0.8",
   "frequenz-client-common >= 0.3.0, < 0.4",
   "grpcio >=1.70.0, < 2",
-  "grpcio-tools >=1.70.0, < 2",
   "protobuf >=5.29.3, < 6",
   "frequenz-client-base >= 0.8.0, < 0.10.0",
 ]
