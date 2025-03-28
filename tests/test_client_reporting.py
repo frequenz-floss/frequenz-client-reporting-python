@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from frequenz.api.reporting.v1.reporting_pb2_grpc import ReportingStub
+from frequenz.client.base.channel import ChannelOptions
 from frequenz.client.base.client import BaseApiClient
 
 from frequenz.client.reporting import ReportingApiClient
@@ -15,9 +16,24 @@ from frequenz.client.reporting._client import ComponentsDataBatch
 @pytest.mark.asyncio
 async def test_client_initialization() -> None:
     """Test that the client initializes the BaseApiClient."""
+    # Parameters for the ReportingApiClient initialization
+    server_url = "gprc://localhost:50051"
+    key = "some-api-key"
+    connect = True
+    channel_defaults = ChannelOptions()
+
     with patch.object(BaseApiClient, "__init__", return_value=None) as mock_base_init:
-        client = ReportingApiClient("gprc://localhost:50051")  # noqa: F841
-        mock_base_init.assert_called_once_with("gprc://localhost:50051", ReportingStub)
+        client = ReportingApiClient(
+            server_url, key=key, connect=connect, channel_defaults=channel_defaults
+        )  # noqa: F841
+        mock_base_init.assert_called_once_with(
+            server_url,
+            ReportingStub,
+            connect=connect,
+            channel_defaults=channel_defaults,
+        )
+
+        assert client._metadata == (("key", key),)  # pylint: disable=W0212
 
 
 def test_components_data_batch_is_empty_true() -> None:
