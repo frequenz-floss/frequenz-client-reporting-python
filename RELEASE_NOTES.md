@@ -13,6 +13,8 @@
 * Introduced 'GrpcStreamBroadcaster' from the base client to enable keep-alive options for gRPC streaming.
 * The 'ChannelOptions' are currently set to the base client default, but can be change as an input.
 
+* Add receiver method (optional through flag) in addition to the iterator.
+
 ## Bug Fixes
 
 <!-- Here goes notable bug fixes that are worth a special mention or explanation -->
