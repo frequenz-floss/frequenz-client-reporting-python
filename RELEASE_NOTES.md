@@ -10,8 +10,7 @@
 
 ## New Features
 
-* Introduced 'GrpcStreamBroadcaster' from the base client to enable keep-alive options for gRPC streaming.
-* The 'ChannelOptions' are currently set to the base client default, but can be change as an input.
+<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ## Bug Fixes
 
