@@ -40,7 +40,7 @@ def test_components_data_batch_is_empty_true() -> None:
     """Test that the is_empty method returns True when the page is empty."""
     data_pb = MagicMock()
     data_pb.components = []
-    batch = ComponentsDataBatch(_data_pb=data_pb)
+    batch = ComponentsDataBatch(data_pb=data_pb)
     assert batch.is_empty() is True
 
 
@@ -49,5 +49,5 @@ def test_components_data_batch_is_empty_false() -> None:
     data_pb = MagicMock()
     data_pb.components = [MagicMock()]
     data_pb.components[0].metric_samples = [MagicMock()]
-    batch = ComponentsDataBatch(_data_pb=data_pb)
+    batch = ComponentsDataBatch(data_pb=data_pb)
     assert batch.is_empty() is False
