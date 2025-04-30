@@ -10,7 +10,7 @@
 
 ## New Features
 
-* Add sensor endpoint to client.
+<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ## Bug Fixes
 
