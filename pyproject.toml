@@ -27,7 +27,7 @@ classifiers = [
 requires-python = ">= 3.11, < 4"
 dependencies = [
   "typing_extensions >= 4.6.1, < 5",
-  "grpc-stubs == 1.53.0.5",
+  "grpc-stubs == 1.53.0.6",
   "frequenz-api-reporting >= 0.7.0, < 0.8",
   "frequenz-client-common >= 0.3.0, < 0.4",
   "grpcio >=1.70.0, < 2",
