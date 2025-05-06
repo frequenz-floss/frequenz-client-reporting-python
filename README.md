@@ -30,7 +30,7 @@ Please also refer to [examples](https://github.com/frequenz-floss/frequenz-clien
 
 ```bash
 # Choose the version you want to install
-VERSION=0.12.0
+VERSION=0.16.0
 pip install frequenz-client-reporting==$VERSION
 ```
 
@@ -70,6 +70,22 @@ data = [
 ]
 ```
 
+### Query metrics for a single microgrid and sensor:
+
+```python
+data = [
+    sample async for sample in
+    client.receive_single_sensor_data(
+        microgrid_id=1,
+        sensor_id=100,
+        metrics=[Metric.SENSOR_IRRADIANCE],
+        start_dt=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_dt=datetime.fromisoformat("2024-05-02T00:00:00"),
+        resampling_period=timedelta(seconds=1),
+    )
+]
+```
+
 
 ### Query metrics for multiple microgrids and components
 
@@ -99,6 +115,33 @@ data = [
 ]
 ```
 
+### Query metrics for multiple microgrids and sensors
+
+```python
+# Set the microgrid ID and the sensor IDs that belong to the microgrid
+# Multiple microgrids and sensors can be queried at once
+microgrid_id1 = 1
+sensor_ids1 = [100, 101, 102]
+microgrid_id2 = 2
+sensor_ids2 = [200, 201, 202]
+microgrid_sensors = [
+    (microgrid_id1, sensor_ids1),
+    (microgrid_id2, sensor_ids2),
+]
+
+data = [
+    sample async for sample in
+    client.receive_microgrid_sensors_data(
+        microgrid_sensors=microgrid_sensors,
+        metrics=[Metric.SENSOR_IRRADIANCE],
+        start_dt=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_dt=datetime.fromisoformat("2024-05-02T00:00:00"),
+        resampling_period=timedelta(seconds=1),
+        include_states=False, # Set to True to include state data
+    )
+]
+```
+
 ### Optionally convert the data to a pandas DataFrame
 
 ```python
@@ -109,7 +152,8 @@ print(df)
 
 ## Command line client tool
 
-The package contains a command-line tool that can be used to request data from the reporting API.
+The package contains a command-line tool that can be used to request 
+microgrid component data from the reporting API.
 ```bash
 reporting-cli \
     --url localhost:4711 \
