@@ -234,7 +234,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         return self._stub
 
     # pylint: disable=too-many-arguments
-    async def list_single_component_data(
+    async def receive_single_component_data(
         self,
         *,
         microgrid_id: int,
@@ -263,7 +263,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             * timestamp: The timestamp of the metric sample.
             * value: The metric value.
         """
-        async for batch in self._list_microgrid_components_data_batch(
+        receiver = await self._receive_microgrid_components_data_batch(
             microgrid_components=[(microgrid_id, [component_id])],
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
             start_time=start_time,
@@ -271,12 +271,13 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             resampling_period=resampling_period,
             include_states=include_states,
             include_bounds=include_bounds,
-        ):
+        )
+        async for batch in receiver:
             for entry in batch:
                 yield entry
 
     # pylint: disable=too-many-arguments
-    async def list_microgrid_components_data(
+    async def receive_microgrid_components_data(
         self,
         *,
         microgrid_components: list[tuple[int, list[int]]],
@@ -307,7 +308,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             * timestamp: The timestamp of the metric sample.
             * value: The metric value.
         """
-        async for batch in self._list_microgrid_components_data_batch(
+        receiver = await self._receive_microgrid_components_data_batch(
             microgrid_components=microgrid_components,
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
             start_time=start_time,
@@ -315,13 +316,14 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             resampling_period=resampling_period,
             include_states=include_states,
             include_bounds=include_bounds,
-        ):
+        )
+        async for batch in receiver:
             for entry in batch:
                 yield entry
 
     # pylint: disable=too-many-arguments
     # pylint: disable=too-many-locals
-    async def _list_microgrid_components_data_batch(
+    async def _receive_microgrid_components_data_batch(
         self,
         *,
         microgrid_components: list[tuple[int, list[int]]],
@@ -343,7 +345,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             include_states: Whether to include the state data.
             include_bounds: Whether to include the bound data.
 
-        Yields:
+        Returns:
             A ComponentsDataBatch object of microgrid components data.
         """
         microgrid_components_pb = [
@@ -426,9 +428,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             retry_strategy=None,
         )
 
-        receiver = broadcaster.new_receiver()
-        async for data in receiver:
-            yield data
+        return broadcaster.new_receiver()
 
     # pylint: disable=too-many-arguments
     async def receive_single_sensor_data(

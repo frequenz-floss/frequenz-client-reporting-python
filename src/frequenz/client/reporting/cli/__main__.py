@@ -158,7 +158,7 @@ async def run(  # noqa: DOC502
             else None
         )
 
-        async for sample in client.list_microgrid_components_data(
+        async for sample in client.receive_microgrid_components_data(
             microgrid_components=microgrid_components,
             metrics=metrics,
             start_time=start_time,
