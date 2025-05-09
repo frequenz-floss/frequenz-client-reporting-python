@@ -30,7 +30,7 @@ Please also refer to [examples](https://github.com/frequenz-floss/frequenz-clien
 
 ```bash
 # Choose the version you want to install
-VERSION=0.16.0
+VERSION=0.17.0
 pip install frequenz-client-reporting==$VERSION
 ```
 
@@ -63,8 +63,8 @@ data = [
         microgrid_id=1,
         component_id=100,
         metrics=[Metric.AC_ACTIVE_POWER, Metric.AC_REACTIVE_POWER],
-        start_dt=datetime.fromisoformat("2024-05-01T00:00:00"),
-        end_dt=datetime.fromisoformat("2024-05-02T00:00:00"),
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
         resampling_period=timedelta(seconds=1),
     )
 ]
@@ -79,8 +79,8 @@ data = [
         microgrid_id=1,
         sensor_id=100,
         metrics=[Metric.SENSOR_IRRADIANCE],
-        start_dt=datetime.fromisoformat("2024-05-01T00:00:00"),
-        end_dt=datetime.fromisoformat("2024-05-02T00:00:00"),
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
         resampling_period=timedelta(seconds=1),
     )
 ]
@@ -106,8 +106,8 @@ data = [
     client.list_microgrid_components_data(
         microgrid_components=microgrid_components,
         metrics=[Metric.AC_ACTIVE_POWER, Metric.AC_REACTIVE_POWER],
-        start_dt=datetime.fromisoformat("2024-05-01T00:00:00"),
-        end_dt=datetime.fromisoformat("2024-05-02T00:00:00"),
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
         resampling_period=timedelta(seconds=1),
         include_states=False, # Set to True to include state data
         include_bounds=False, # Set to True to include metric bounds data
@@ -134,8 +134,8 @@ data = [
     client.receive_microgrid_sensors_data(
         microgrid_sensors=microgrid_sensors,
         metrics=[Metric.SENSOR_IRRADIANCE],
-        start_dt=datetime.fromisoformat("2024-05-01T00:00:00"),
-        end_dt=datetime.fromisoformat("2024-05-02T00:00:00"),
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
         resampling_period=timedelta(seconds=1),
         include_states=False, # Set to True to include state data
     )
