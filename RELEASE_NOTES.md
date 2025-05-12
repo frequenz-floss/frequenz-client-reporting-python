@@ -6,7 +6,7 @@
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+* Change 'start_dt' and 'end_dt' to 'start_time' and 'end_time' respectively.
 
 ## New Features
 

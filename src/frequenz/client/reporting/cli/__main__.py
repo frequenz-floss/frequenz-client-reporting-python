@@ -91,8 +91,8 @@ def main() -> None:
             microgrid_id=args.mid,
             component_id=args.cid,
             metric_names=args.metrics,
-            start_dt=args.start,
-            end_dt=args.end,
+            start_time=args.start,
+            end_time=args.end,
             resampling_period_s=args.resampling_period_s,
             states=args.states,
             bounds=args.bounds,
@@ -109,8 +109,8 @@ async def run(  # noqa: DOC502
     microgrid_id: int,
     component_id: list[str],
     metric_names: list[str],
-    start_dt: datetime | None,
-    end_dt: datetime | None,
+    start_time: datetime | None,
+    end_time: datetime | None,
     resampling_period_s: int | None,
     states: bool,
     bounds: bool,
@@ -124,8 +124,8 @@ async def run(  # noqa: DOC502
         microgrid_id: microgrid ID
         component_id: component ID
         metric_names: list of metric names
-        start_dt: start datetime, if None, the earliest available data will be used
-        end_dt: end datetime, if None starts streaming indefinitely from start_dt
+        start_time: start datetime, if None, the earliest available data will be used
+        end_time: end datetime, if None starts streaming indefinitely from start_time
         resampling_period_s: The period for resampling the data.
         states: include states in the output
         bounds: include bounds in the output
@@ -161,8 +161,8 @@ async def run(  # noqa: DOC502
         async for sample in client.list_microgrid_components_data(
             microgrid_components=microgrid_components,
             metrics=metrics,
-            start_dt=start_dt,
-            end_dt=end_dt,
+            start_time=start_time,
+            end_time=end_time,
             resampling_period=resampling_period,
             include_states=states,
             include_bounds=bounds,
@@ -176,8 +176,8 @@ async def run(  # noqa: DOC502
                     microgrid_id=microgrid_id,
                     metric=metric,
                     aggregation_formula=formula,
-                    start=start_dt,
-                    end=end_dt,
+                    start_time=start_time,
+                    end_time=end_time,
                     resampling_period=resampling_period,
                 ):
                     yield sample

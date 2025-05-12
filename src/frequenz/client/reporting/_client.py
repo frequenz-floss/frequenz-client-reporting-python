@@ -240,8 +240,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         microgrid_id: int,
         component_id: int,
         metrics: Metric | list[Metric],
-        start_dt: datetime | None,
-        end_dt: datetime | None,
+        start_time: datetime | None,
+        end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
         include_bounds: bool = False,
@@ -252,8 +252,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             microgrid_id: The microgrid ID.
             component_id: The component ID.
             metrics: The metric name or list of metric names.
-            start_dt: start datetime, if None, the earliest available data will be used
-            end_dt: end datetime, if None starts streaming indefinitely from start_dt
+            start_time: start datetime, if None, the earliest available data will be used
+            end_time: end datetime, if None starts streaming indefinitely from start_time
             resampling_period: The period for resampling the data.
             include_states: Whether to include the state data.
             include_bounds: Whether to include the bound data.
@@ -266,8 +266,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         async for batch in self._list_microgrid_components_data_batch(
             microgrid_components=[(microgrid_id, [component_id])],
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
-            start_dt=start_dt,
-            end_dt=end_dt,
+            start_time=start_time,
+            end_time=end_time,
             resampling_period=resampling_period,
             include_states=include_states,
             include_bounds=include_bounds,
@@ -281,8 +281,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         *,
         microgrid_components: list[tuple[int, list[int]]],
         metrics: Metric | list[Metric],
-        start_dt: datetime | None,
-        end_dt: datetime | None,
+        start_time: datetime | None,
+        end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
         include_bounds: bool = False,
@@ -293,8 +293,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             microgrid_components: List of tuples where each tuple contains
                                   microgrid ID and corresponding component IDs.
             metrics: The metric name or list of metric names.
-            start_dt: start datetime, if None, the earliest available data will be used
-            end_dt: end datetime, if None starts streaming indefinitely from start_dt
+            start_time: start datetime, if None, the earliest available data will be used
+            end_time: end datetime, if None starts streaming indefinitely from start_time
             resampling_period: The period for resampling the data.
             include_states: Whether to include the state data.
             include_bounds: Whether to include the bound data.
@@ -310,8 +310,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         async for batch in self._list_microgrid_components_data_batch(
             microgrid_components=microgrid_components,
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
-            start_dt=start_dt,
-            end_dt=end_dt,
+            start_time=start_time,
+            end_time=end_time,
             resampling_period=resampling_period,
             include_states=include_states,
             include_bounds=include_bounds,
@@ -326,8 +326,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         *,
         microgrid_components: list[tuple[int, list[int]]],
         metrics: list[Metric],
-        start_dt: datetime | None,
-        end_dt: datetime | None,
+        start_time: datetime | None,
+        end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
         include_bounds: bool = False,
@@ -337,8 +337,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         Args:
             microgrid_components: A list of tuples of microgrid IDs and component IDs.
             metrics: A list of metrics.
-            start_dt: start datetime, if None, the earliest available data will be used
-            end_dt: end datetime, if None starts streaming indefinitely from start_dt
+            start_time: start datetime, if None, the earliest available data will be used
+            end_time: end datetime, if None starts streaming indefinitely from start_time
             resampling_period: The period for resampling the data.
             include_states: Whether to include the state data.
             include_bounds: Whether to include the bound data.
@@ -357,8 +357,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             return ts
 
         time_filter = PBTimeFilter(
-            start=dt2ts(start_dt) if start_dt else None,
-            end=dt2ts(end_dt) if end_dt else None,
+            start=dt2ts(start_time) if start_time else None,
+            end=dt2ts(end_time) if end_time else None,
         )
 
         incl_states = (
@@ -437,8 +437,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         microgrid_id: int,
         sensor_id: int,
         metrics: Metric | list[Metric],
-        start_dt: datetime | None,
-        end_dt: datetime | None,
+        start_time: datetime | None,
+        end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
     ) -> AsyncIterator[MetricSample]:
@@ -448,8 +448,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             microgrid_id: The microgrid ID.
             sensor_id: The sensor ID.
             metrics: The metric name or list of metric names.
-            start_dt: start datetime, if None, the earliest available data will be used.
-            end_dt: end datetime, if None starts streaming indefinitely from start_dt.
+            start_time: start datetime, if None, the earliest available data will be used.
+            end_time: end datetime, if None starts streaming indefinitely from start_time.
             resampling_period: The period for resampling the data.
             include_states: Whether to include the state data.
 
@@ -461,8 +461,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         receiver = await self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=[(microgrid_id, [sensor_id])],
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
-            start_dt=start_dt,
-            end_dt=end_dt,
+            start_time=start_time,
+            end_time=end_time,
             resampling_period=resampling_period,
             include_states=include_states,
         )
@@ -476,8 +476,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         *,
         microgrid_sensors: list[tuple[int, list[int]]],
         metrics: Metric | list[Metric],
-        start_dt: datetime | None,
-        end_dt: datetime | None,
+        start_time: datetime | None,
+        end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
     ) -> AsyncIterator[MetricSample]:
@@ -487,8 +487,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             microgrid_sensors: List of tuples where each tuple contains
                                 microgrid ID and corresponding sensor IDs.
             metrics: The metric name or list of metric names.
-            start_dt: start datetime, if None, the earliest available data will be used.
-            end_dt: end datetime, if None starts streaming indefinitely from start_dt.
+            start_time: start datetime, if None, the earliest available data will be used.
+            end_time: end datetime, if None starts streaming indefinitely from start_time.
             resampling_period: The period for resampling the data.
             include_states: Whether to include the state data.
 
@@ -503,8 +503,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         receiver = await self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=microgrid_sensors,
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
-            start_dt=start_dt,
-            end_dt=end_dt,
+            start_time=start_time,
+            end_time=end_time,
             resampling_period=resampling_period,
             include_states=include_states,
         )
@@ -519,8 +519,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         *,
         microgrid_sensors: list[tuple[int, list[int]]],
         metrics: list[Metric],
-        start_dt: datetime | None,
-        end_dt: datetime | None,
+        start_time: datetime | None,
+        end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
     ) -> AsyncIterator[SensorsDataBatch]:
@@ -529,8 +529,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         Args:
             microgrid_sensors: A list of tuples of microgrid IDs and sensor IDs.
             metrics: A list of metrics.
-            start_dt: start datetime, if None, the earliest available data will be used.
-            end_dt: end datetime, if None starts streaming indefinitely from start_dt.
+            start_time: start datetime, if None, the earliest available data will be used.
+            end_time: end datetime, if None starts streaming indefinitely from start_time.
             resampling_period: The period for resampling the data.
             include_states: Whether to include the state data.
 
@@ -548,8 +548,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             return ts
 
         time_filter = PBTimeFilter(
-            start=dt2ts(start_dt) if start_dt else None,
-            end=dt2ts(end_dt) if end_dt else None,
+            start=dt2ts(start_time) if start_time else None,
+            end=dt2ts(end_time) if end_time else None,
         )
 
         incl_states = (
@@ -619,8 +619,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         microgrid_id: int,
         metric: Metric,
         aggregation_formula: str,
-        start: datetime | None,
-        end: datetime | None,
+        start_time: datetime | None,
+        end_time: datetime | None,
         resampling_period: timedelta,
     ) -> AsyncIterator[MetricSample]:
         """Iterate over aggregated data for a single metric using GrpcStreamBroadcaster.
@@ -630,8 +630,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             microgrid_id: The microgrid ID.
             metric: The metric name.
             aggregation_formula: The aggregation formula.
-            start: start datetime, if None, the earliest available data will be used
-            end: end datetime, if None starts streaming indefinitely from start
+            start_time: start datetime, if None, the earliest available data will be used
+            end_time: end datetime, if None starts streaming indefinitely from start_time
             resampling_period: The period for resampling the data.
 
         Yields:
@@ -655,8 +655,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             return ts
 
         time_filter = PBTimeFilter(
-            start=dt2ts(start) if start else None,
-            end=dt2ts(end) if end else None,
+            start=dt2ts(start_time) if start_time else None,
+            end=dt2ts(end_time) if end_time else None,
         )
 
         stream_filter = PBAggregatedStreamRequest.AggregationStreamFilter(
