@@ -222,7 +222,22 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             channel_defaults=channel_defaults,
         )
 
-        self._broadcasters: dict[int, GrpcStreamBroadcaster[Any, Any]] = {}
+        self._components_data_streams: dict[
+            tuple[
+                tuple[
+                    tuple[int, tuple[int, ...]], ...
+                ],  # microgrid_components as a tuple of tuples
+                tuple[str, ...],  # metric names
+                float | None,  # start_time timestamp
+                float | None,  # end_time timestamp
+                int | None,  # resampling period in seconds
+                bool,  # include_states
+                bool,  # include_bounds
+            ],
+            GrpcStreamBroadcaster[
+                PBReceiveMicrogridComponentsDataStreamResponse, ComponentsDataBatch
+            ],
+        ] = {}
 
         self._metadata = (("key", key),) if key else ()
 
@@ -263,7 +278,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             * timestamp: The timestamp of the metric sample.
             * value: The metric value.
         """
-        receiver = await self._receive_microgrid_components_data_batch(
+        broadcaster = await self._receive_microgrid_components_data_batch(
             microgrid_components=[(microgrid_id, [component_id])],
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
             start_time=start_time,
@@ -272,6 +287,9 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             include_states=include_states,
             include_bounds=include_bounds,
         )
+
+        receiver = broadcaster.new_receiver()
+
         async for batch in receiver:
             for entry in batch:
                 yield entry
@@ -308,7 +326,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             * timestamp: The timestamp of the metric sample.
             * value: The metric value.
         """
-        receiver = await self._receive_microgrid_components_data_batch(
+        broadcaster = await self._receive_microgrid_components_data_batch(
             microgrid_components=microgrid_components,
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
             start_time=start_time,
@@ -317,6 +335,9 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             include_states=include_states,
             include_bounds=include_bounds,
         )
+
+        receiver = broadcaster.new_receiver()
+
         async for batch in receiver:
             for entry in batch:
                 yield entry
@@ -333,102 +354,104 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         resampling_period: timedelta | None,
         include_states: bool = False,
         include_bounds: bool = False,
-    ) -> AsyncIterator[ComponentsDataBatch]:
-        """Iterate over the component data batches in the stream using GrpcStreamBroadcaster.
-
-        Args:
-            microgrid_components: A list of tuples of microgrid IDs and component IDs.
-            metrics: A list of metrics.
-            start_time: start datetime, if None, the earliest available data will be used
-            end_time: end datetime, if None starts streaming indefinitely from start_time
-            resampling_period: The period for resampling the data.
-            include_states: Whether to include the state data.
-            include_bounds: Whether to include the bound data.
-
-        Returns:
-            A ComponentsDataBatch object of microgrid components data.
-        """
-        microgrid_components_pb = [
-            PBMicrogridComponentIDs(microgrid_id=mid, component_ids=cids)
-            for mid, cids in microgrid_components
-        ]
-
-        def dt2ts(dt: datetime) -> PBTimestamp:
-            ts = PBTimestamp()
-            ts.FromDatetime(dt)
-            return ts
-
-        time_filter = PBTimeFilter(
-            start=dt2ts(start_time) if start_time else None,
-            end=dt2ts(end_time) if end_time else None,
+    ) -> GrpcStreamBroadcaster[
+        PBReceiveMicrogridComponentsDataStreamResponse, ComponentsDataBatch
+    ]:
+        """Return a GrpcStreamBroadcaster for microgrid component data."""
+        stream_key = (
+            tuple((mid, tuple(cids)) for mid, cids in microgrid_components),
+            tuple(metric.name for metric in metrics),
+            start_time.timestamp() if start_time else None,
+            end_time.timestamp() if end_time else None,
+            round(resampling_period.total_seconds()) if resampling_period else None,
+            include_states,
+            include_bounds,
         )
 
-        incl_states = (
-            PBFilterOption.FILTER_OPTION_INCLUDE
-            if include_states
-            else PBFilterOption.FILTER_OPTION_EXCLUDE
-        )
-        incl_bounds = (
-            PBFilterOption.FILTER_OPTION_INCLUDE
-            if include_bounds
-            else PBFilterOption.FILTER_OPTION_EXCLUDE
-        )
-        include_options = PBReceiveMicrogridComponentsDataStreamRequest.IncludeOptions(
-            bounds=incl_bounds,
-            states=incl_states,
-        )
-
-        stream_filter = PBReceiveMicrogridComponentsDataStreamRequest.StreamFilter(
-            time_filter=time_filter,
-            resampling_options=PBResamplingOptions(
-                resolution=(
-                    round(resampling_period.total_seconds())
-                    if resampling_period is not None
-                    else None
-                )
-            ),
-            include_options=include_options,
-        )
-
-        metric_conns_pb = [
-            PBMetricConnections(
-                metric=metric.to_proto(),
-                connections=[],
-            )
-            for metric in metrics
-        ]
-
-        request = PBReceiveMicrogridComponentsDataStreamRequest(
-            microgrid_components=microgrid_components_pb,
-            metrics=metric_conns_pb,
-            filter=stream_filter,
-        )
-
-        def transform_response(
-            response: PBReceiveMicrogridComponentsDataStreamResponse,
-        ) -> ComponentsDataBatch:
-            return ComponentsDataBatch(response)
-
-        async def stream_method() -> (
-            AsyncIterable[PBReceiveMicrogridComponentsDataStreamResponse]
+        if (
+            stream_key not in self._components_data_streams
+            or not self._components_data_streams[stream_key].is_running
         ):
-            call_iterator = self.stub.ReceiveMicrogridComponentsDataStream(
-                request, metadata=self._metadata
+            microgrid_components_pb = [
+                PBMicrogridComponentIDs(microgrid_id=mid, component_ids=cids)
+                for mid, cids in microgrid_components
+            ]
+
+            def dt2ts(dt: datetime) -> PBTimestamp:
+                ts = PBTimestamp()
+                ts.FromDatetime(dt)
+                return ts
+
+            time_filter = PBTimeFilter(
+                start=dt2ts(start_time) if start_time else None,
+                end=dt2ts(end_time) if end_time else None,
             )
-            async for response in cast(
-                AsyncIterable[PBReceiveMicrogridComponentsDataStreamResponse],
-                call_iterator,
+
+            incl_states = (
+                PBFilterOption.FILTER_OPTION_INCLUDE
+                if include_states
+                else PBFilterOption.FILTER_OPTION_EXCLUDE
+            )
+            incl_bounds = (
+                PBFilterOption.FILTER_OPTION_INCLUDE
+                if include_bounds
+                else PBFilterOption.FILTER_OPTION_EXCLUDE
+            )
+            include_options = (
+                PBReceiveMicrogridComponentsDataStreamRequest.IncludeOptions(
+                    bounds=incl_bounds,
+                    states=incl_states,
+                )
+            )
+
+            stream_filter = PBReceiveMicrogridComponentsDataStreamRequest.StreamFilter(
+                time_filter=time_filter,
+                resampling_options=PBResamplingOptions(
+                    resolution=(
+                        round(resampling_period.total_seconds())
+                        if resampling_period
+                        else None
+                    )
+                ),
+                include_options=include_options,
+            )
+
+            metric_conns_pb = [
+                PBMetricConnections(metric=metric.to_proto(), connections=[])
+                for metric in metrics
+            ]
+
+            request = PBReceiveMicrogridComponentsDataStreamRequest(
+                microgrid_components=microgrid_components_pb,
+                metrics=metric_conns_pb,
+                filter=stream_filter,
+            )
+
+            def transform_response(
+                response: PBReceiveMicrogridComponentsDataStreamResponse,
+            ) -> ComponentsDataBatch:
+                return ComponentsDataBatch(response)
+
+            async def stream_method() -> (
+                AsyncIterable[PBReceiveMicrogridComponentsDataStreamResponse]
             ):
-                yield response
+                call_iterator = self.stub.ReceiveMicrogridComponentsDataStream(
+                    request, metadata=self._metadata
+                )
+                async for response in cast(
+                    AsyncIterable[PBReceiveMicrogridComponentsDataStreamResponse],
+                    call_iterator,
+                ):
+                    yield response
 
-        broadcaster = GrpcStreamBroadcaster(
-            stream_name="microgrid-components-data-stream",
-            stream_method=stream_method,
-            transform=transform_response,
-            retry_strategy=None,
-        )
+            self._components_data_streams[stream_key] = GrpcStreamBroadcaster(
+                stream_name="microgrid-components-data-stream",
+                stream_method=stream_method,
+                transform=transform_response,
+                retry_strategy=None,
+            )
 
-        return broadcaster.new_receiver()
+        return self._components_data_streams[stream_key]
 
     # pylint: disable=too-many-arguments
     async def receive_single_sensor_data(
