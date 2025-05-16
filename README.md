@@ -43,8 +43,8 @@ from datetime import datetime, timedelta
 from frequenz.client.common.metric import Metric
 from frequenz.client.reporting import ReportingApiClient
 
-# Change server address if needed
-SERVER_URL = "grpc://reporting.api.frequenz.com:443"
+# Change server address
+SERVER_URL = "grpc://replace-this-with-your-server-url:port"
 API_KEY = open('api_key.txt').read().strip()
 client = ReportingApiClient(server_url=SERVER_URL, key=API_KEY)
 ```
