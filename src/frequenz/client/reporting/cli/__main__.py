@@ -12,7 +12,7 @@ from typing import AsyncIterator
 from frequenz.client.common.metric import Metric
 
 from frequenz.client.reporting import ReportingApiClient
-from frequenz.client.reporting._client import MetricSample
+from frequenz.client.reporting._types import MetricSample
 
 
 def main() -> None:
