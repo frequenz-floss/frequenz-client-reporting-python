@@ -3,7 +3,7 @@
 
 [build-system]
 requires = [
-  "setuptools == 80.1.0",
+  "setuptools == 80.9.0",
   "setuptools_scm[toml] == 8.3.1",
   "frequenz-repo-config[lib] == 0.13.4",
 ]
@@ -65,7 +65,7 @@ dev-mkdocs = [
   "frequenz-repo-config[lib] == 0.13.4",
 ]
 dev-mypy = [
-  "mypy == 1.15.0",
+  "mypy == 1.16.0",
   "types-Markdown == 3.8.0.20250415",
   "types-protobuf == 5.29.1.20250403",
   # For checking the noxfile, docs/ script, and tests
@@ -73,7 +73,7 @@ dev-mypy = [
   "pandas-stubs >= 2, < 3",  # Only required for example
 ]
 dev-noxfile = [
-  "nox == 2025.2.9",
+  "nox == 2025.5.1",
   "frequenz-repo-config[lib] == 0.13.4",
 ]
 dev-pylint = [
