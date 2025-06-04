@@ -7,6 +7,8 @@
 ## Upgrading
 
 * Change 'start_dt' and 'end_dt' to 'start_time' and 'end_time' respectively.
+* Rename 'list' to 'receive' in component data retrival functions
+* Return the receiver directly in '_recieve_microgrid_components_data_batch'
 
 ## New Features
 

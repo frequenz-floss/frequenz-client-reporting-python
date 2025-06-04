@@ -10,7 +10,7 @@ from frequenz.client.base.channel import ChannelOptions
 from frequenz.client.base.client import BaseApiClient
 
 from frequenz.client.reporting import ReportingApiClient
-from frequenz.client.reporting._client import ComponentsDataBatch
+from frequenz.client.reporting._types import ComponentsDataBatch
 
 
 @pytest.mark.asyncio
