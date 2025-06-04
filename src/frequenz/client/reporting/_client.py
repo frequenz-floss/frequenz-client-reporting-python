@@ -305,17 +305,16 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             ) -> ComponentsDataBatch:
                 return ComponentsDataBatch(response)
 
-            async def stream_method() -> (
+            def stream_method() -> (
                 AsyncIterable[PBReceiveMicrogridComponentsDataStreamResponse]
             ):
                 call_iterator = self.stub.ReceiveMicrogridComponentsDataStream(
                     request, metadata=self._metadata
                 )
-                async for response in cast(
+                return cast(
                     AsyncIterable[PBReceiveMicrogridComponentsDataStreamResponse],
                     call_iterator,
-                ):
-                    yield response
+                )
 
             self._components_data_streams[stream_key] = GrpcStreamBroadcaster(
                 stream_name="microgrid-components-data-stream",
@@ -491,17 +490,16 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             ) -> SensorsDataBatch:
                 return SensorsDataBatch(response)
 
-            async def stream_method() -> (
+            def stream_method() -> (
                 AsyncIterable[PBReceiveMicrogridSensorsDataStreamResponse]
             ):
                 call_iterator = self.stub.ReceiveMicrogridSensorsDataStream(
                     request, metadata=self._metadata
                 )
-                async for response in cast(
+                return cast(
                     AsyncIterable[PBReceiveMicrogridSensorsDataStreamResponse],
                     call_iterator,
-                ):
-                    yield response
+                )
 
             self._sensors_data_streams[stream_key] = GrpcStreamBroadcaster(
                 stream_name="microgrid-sensors-data-stream",
@@ -511,7 +509,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
         return self._sensors_data_streams[stream_key].new_receiver()
 
-    async def receive_aggregated_data(
+    def receive_aggregated_data(
         self,
         *,
         microgrid_id: int,
@@ -587,17 +585,14 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             ) -> MetricSample:
                 return AggregatedMetric(response).sample()
 
-            async def stream_method() -> AsyncIterable[PBAggregatedStreamResponse]:
+            def stream_method() -> AsyncIterable[PBAggregatedStreamResponse]:
                 call_iterator = (
                     self.stub.ReceiveAggregatedMicrogridComponentsDataStream(
                         request, metadata=self._metadata
                     )
                 )
 
-                async for response in cast(
-                    AsyncIterable[PBAggregatedStreamResponse], call_iterator
-                ):
-                    yield response
+                return cast(AsyncIterable[PBAggregatedStreamResponse], call_iterator)
 
             self._aggregated_data_streams[stream_key] = GrpcStreamBroadcaster(
                 stream_name="aggregated-microgrid-data-stream",

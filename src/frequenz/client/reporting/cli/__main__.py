@@ -171,7 +171,7 @@ async def run(  # noqa: DOC502
         for formula in formulas:
             assert resampling_period is not None
             for metric in metrics:
-                async for sample in await client.receive_aggregated_data(
+                async for sample in client.receive_aggregated_data(
                     microgrid_id=microgrid_id,
                     metric=metric,
                     aggregation_formula=formula,
