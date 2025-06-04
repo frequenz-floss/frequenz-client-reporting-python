@@ -326,7 +326,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
-    ) -> AsyncIterator[MetricSample]:
+    ) -> Receiver[MetricSample]:
         """Iterate over the data for a single sensor and metric.
 
         Args:
@@ -338,10 +338,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             resampling_period: The period for resampling the data.
             include_states: Whether to include the state data.
 
-        Yields:
-            A named tuple with the following fields:
-            * timestamp: The timestamp of the metric sample.
-            * value: The metric value.
+        Returns:
+                A receiver of `MetricSample`s.
         """
         receiver = await self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=[(microgrid_id, [sensor_id])],
@@ -351,9 +349,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             resampling_period=resampling_period,
             include_states=include_states,
         )
-        async for batch in receiver:
-            for entry in batch:
-                yield entry
+        return BatchUnrollReceiver(receiver)
 
     # pylint: disable=too-many-arguments
     async def receive_microgrid_sensors_data(
@@ -365,7 +361,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
-    ) -> AsyncIterator[MetricSample]:
+    ) -> Receiver[MetricSample]:
         """Iterate over the data for multiple sensors in a microgrid.
 
         Args:
@@ -377,13 +373,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             resampling_period: The period for resampling the data.
             include_states: Whether to include the state data.
 
-        Yields:
-            A named tuple with the following fields:
-            * microgrid_id: The microgrid ID.
-            * sensor_id: The sensor ID.
-            * metric: The metric name.
-            * timestamp: The timestamp of the metric sample.
-            * value: The metric value.
+        Returns:
+            A receiver of `MetricSample`s.
         """
         receiver = await self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=microgrid_sensors,
@@ -393,9 +384,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             resampling_period=resampling_period,
             include_states=include_states,
         )
-        async for batch in receiver:
-            for entry in batch:
-                yield entry
+        return BatchUnrollReceiver(receiver)
 
     # pylint: disable=too-many-arguments
     # pylint: disable=too-many-locals
@@ -408,7 +397,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         end_time: datetime | None,
         resampling_period: timedelta | None,
         include_states: bool = False,
-    ) -> AsyncIterator[SensorsDataBatch]:
+    ) -> Receiver[SensorsDataBatch]:
         """Iterate over the sensor data batches in the stream using GrpcStreamBroadcaster.
 
         Args:
@@ -420,7 +409,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             include_states: Whether to include the state data.
 
         Returns:
-            A SensorDataBatch object of microgrid sensors data.
+            A GrpcStreamBroadcaster that can be used to receive sensor data batches.
         """
         stream_key = (
             tuple((mid, tuple(sids)) for mid, sids in microgrid_sensors),

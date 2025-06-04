@@ -8,19 +8,21 @@ from collections.abc import Iterator
 from frequenz.channels import Receiver, ReceiverStoppedError
 from typing_extensions import override
 
-from ._types import ComponentsDataBatch, MetricSample
+from ._types import ComponentsDataBatch, MetricSample, SensorsDataBatch
 
 
 class BatchUnrollReceiver(Receiver[MetricSample]):
     """Receiver to unroll `ComponentsDataBatch`s into `MetricSample`s."""
 
-    def __init__(self, stream: Receiver[ComponentsDataBatch]) -> None:
+    def __init__(
+        self, stream: Receiver[ComponentsDataBatch | SensorsDataBatch]
+    ) -> None:
         """Initialize the receiver.
 
         Args:
             stream: The stream to receive batches from.
         """
-        self._stream: Receiver[ComponentsDataBatch] = stream
+        self._stream: Receiver[ComponentsDataBatch | SensorsDataBatch] = stream
         self._batch_iter: Iterator[MetricSample] | None = None
         self._latest_sample: MetricSample | None = None
         self._no_more_data: bool = False
