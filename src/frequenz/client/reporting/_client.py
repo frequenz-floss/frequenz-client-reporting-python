@@ -3,7 +3,7 @@
 
 """Client for requests to the Reporting API."""
 
-from collections.abc import AsyncIterable, AsyncIterator
+from collections.abc import AsyncIterable
 from datetime import datetime, timedelta
 from typing import cast
 
@@ -116,6 +116,17 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             GrpcStreamBroadcaster[
                 PBReceiveMicrogridSensorsDataStreamResponse, SensorsDataBatch
             ],
+        ] = {}
+        self._aggregated_data_streams: dict[
+            tuple[
+                int,  # microgrid_id
+                str,  # metric name
+                str,  # aggregation_formula
+                float | None,  # start_time timestamp
+                float | None,  # end_time timestamp
+                int | None,  # resampling period in seconds
+            ],
+            GrpcStreamBroadcaster[PBAggregatedStreamResponse, MetricSample],
         ] = {}
 
         self._metadata = (("key", key),) if key else ()
@@ -509,7 +520,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         start_time: datetime | None,
         end_time: datetime | None,
         resampling_period: timedelta,
-    ) -> AsyncIterator[MetricSample]:
+    ) -> Receiver[MetricSample]:
         """Iterate over aggregated data for a single metric using GrpcStreamBroadcaster.
 
         For now this only supports a single metric and aggregation formula.
@@ -521,63 +532,78 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             end_time: end datetime, if None starts streaming indefinitely from start_time
             resampling_period: The period for resampling the data.
 
-        Yields:
-            An iterator over the aggregated metric samples.
+        Returns:
+            A receiver of `MetricSample`s.
 
         Raises:
             ValueError: If the resampling_period is not provided.
         """
-        if not resampling_period:
-            raise ValueError("resampling_period must be provided")
-
-        aggregation_config = PBAggregationConfig(
-            microgrid_id=microgrid_id,
-            metric=metric.to_proto(),
-            aggregation_formula=aggregation_formula,
+        stream_key = (
+            microgrid_id,
+            metric.name,
+            aggregation_formula,
+            start_time.timestamp() if start_time else None,
+            end_time.timestamp() if end_time else None,
+            round(resampling_period.total_seconds()) if resampling_period else None,
         )
+        if (
+            stream_key not in self._aggregated_data_streams
+            or not self._aggregated_data_streams[stream_key].is_running
+        ):
 
-        def dt2ts(dt: datetime) -> PBTimestamp:
-            ts = PBTimestamp()
-            ts.FromDatetime(dt)
-            return ts
+            if not resampling_period:
+                raise ValueError("resampling_period must be provided")
 
-        time_filter = PBTimeFilter(
-            start=dt2ts(start_time) if start_time else None,
-            end=dt2ts(end_time) if end_time else None,
-        )
-
-        stream_filter = PBAggregatedStreamRequest.AggregationStreamFilter(
-            time_filter=time_filter,
-            resampling_options=PBResamplingOptions(
-                resolution=round(resampling_period.total_seconds())
-            ),
-        )
-
-        request = PBAggregatedStreamRequest(
-            aggregation_configs=[aggregation_config],
-            filter=stream_filter,
-        )
-
-        def transform_response(response: PBAggregatedStreamResponse) -> MetricSample:
-            return AggregatedMetric(response).sample()
-
-        async def stream_method() -> AsyncIterable[PBAggregatedStreamResponse]:
-            call_iterator = self.stub.ReceiveAggregatedMicrogridComponentsDataStream(
-                request, metadata=self._metadata
+            aggregation_config = PBAggregationConfig(
+                microgrid_id=microgrid_id,
+                metric=metric.to_proto(),
+                aggregation_formula=aggregation_formula,
             )
 
-            async for response in cast(
-                AsyncIterable[PBAggregatedStreamResponse], call_iterator
-            ):
-                yield response
+            def dt2ts(dt: datetime) -> PBTimestamp:
+                ts = PBTimestamp()
+                ts.FromDatetime(dt)
+                return ts
 
-        broadcaster = GrpcStreamBroadcaster(
-            stream_name="aggregated-microgrid-data-stream",
-            stream_method=stream_method,
-            transform=transform_response,
-            retry_strategy=None,
-        )
+            time_filter = PBTimeFilter(
+                start=dt2ts(start_time) if start_time else None,
+                end=dt2ts(end_time) if end_time else None,
+            )
 
-        receiver = broadcaster.new_receiver()
-        async for data in receiver:
-            yield data
+            stream_filter = PBAggregatedStreamRequest.AggregationStreamFilter(
+                time_filter=time_filter,
+                resampling_options=PBResamplingOptions(
+                    resolution=round(resampling_period.total_seconds())
+                ),
+            )
+
+            request = PBAggregatedStreamRequest(
+                aggregation_configs=[aggregation_config],
+                filter=stream_filter,
+            )
+
+            def transform_response(
+                response: PBAggregatedStreamResponse,
+            ) -> MetricSample:
+                return AggregatedMetric(response).sample()
+
+            async def stream_method() -> AsyncIterable[PBAggregatedStreamResponse]:
+                call_iterator = (
+                    self.stub.ReceiveAggregatedMicrogridComponentsDataStream(
+                        request, metadata=self._metadata
+                    )
+                )
+
+                async for response in cast(
+                    AsyncIterable[PBAggregatedStreamResponse], call_iterator
+                ):
+                    yield response
+
+            self._aggregated_data_streams[stream_key] = GrpcStreamBroadcaster(
+                stream_name="aggregated-microgrid-data-stream",
+                stream_method=stream_method,
+                transform=transform_response,
+                retry_strategy=None,
+            )
+
+        return self._aggregated_data_streams[stream_key].new_receiver()
