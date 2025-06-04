@@ -102,6 +102,21 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
                 PBReceiveMicrogridComponentsDataStreamResponse, ComponentsDataBatch
             ],
         ] = {}
+        self._sensors_data_streams: dict[
+            tuple[
+                tuple[
+                    tuple[int, tuple[int, ...]], ...
+                ],  # microgrid_sensors as a tuple of tuples
+                tuple[str, ...],  # metric names
+                float | None,  # start_time timestamp
+                float | None,  # end_time timestamp
+                int | None,  # resampling period in seconds
+                bool,  # include_states
+            ],
+            GrpcStreamBroadcaster[
+                PBReceiveMicrogridSensorsDataStreamResponse, SensorsDataBatch
+            ],
+        ] = {}
 
         self._metadata = (("key", key),) if key else ()
 
@@ -407,81 +422,94 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         Returns:
             A SensorDataBatch object of microgrid sensors data.
         """
-        microgrid_sensors_pb = [
-            PBMicrogridSensorIDs(microgrid_id=mid, sensor_ids=sids)
-            for mid, sids in microgrid_sensors
-        ]
-
-        def dt2ts(dt: datetime) -> PBTimestamp:
-            ts = PBTimestamp()
-            ts.FromDatetime(dt)
-            return ts
-
-        time_filter = PBTimeFilter(
-            start=dt2ts(start_time) if start_time else None,
-            end=dt2ts(end_time) if end_time else None,
+        stream_key = (
+            tuple((mid, tuple(sids)) for mid, sids in microgrid_sensors),
+            tuple(metric.name for metric in metrics),
+            start_time.timestamp() if start_time else None,
+            end_time.timestamp() if end_time else None,
+            round(resampling_period.total_seconds()) if resampling_period else None,
+            include_states,
         )
 
-        incl_states = (
-            PBFilterOption.FILTER_OPTION_INCLUDE
-            if include_states
-            else PBFilterOption.FILTER_OPTION_EXCLUDE
-        )
-        include_options = PBReceiveMicrogridSensorsDataStreamRequest.IncludeOptions(
-            states=incl_states,
-        )
-
-        stream_filter = PBReceiveMicrogridSensorsDataStreamRequest.StreamFilter(
-            time_filter=time_filter,
-            resampling_options=PBResamplingOptions(
-                resolution=(
-                    round(resampling_period.total_seconds())
-                    if resampling_period is not None
-                    else None
-                )
-            ),
-            include_options=include_options,
-        )
-
-        metric_conns_pb = [
-            PBMetricConnections(
-                metric=metric.to_proto(),
-                connections=[],
-            )
-            for metric in metrics
-        ]
-
-        request = PBReceiveMicrogridSensorsDataStreamRequest(
-            microgrid_sensors=microgrid_sensors_pb,
-            metrics=metric_conns_pb,
-            filter=stream_filter,
-        )
-
-        def transform_response(
-            response: PBReceiveMicrogridSensorsDataStreamResponse,
-        ) -> SensorsDataBatch:
-            return SensorsDataBatch(response)
-
-        async def stream_method() -> (
-            AsyncIterable[PBReceiveMicrogridSensorsDataStreamResponse]
+        if (
+            stream_key not in self._sensors_data_streams
+            or not self._sensors_data_streams[stream_key].is_running
         ):
-            call_iterator = self.stub.ReceiveMicrogridSensorsDataStream(
-                request, metadata=self._metadata
+
+            microgrid_sensors_pb = [
+                PBMicrogridSensorIDs(microgrid_id=mid, sensor_ids=sids)
+                for mid, sids in microgrid_sensors
+            ]
+
+            def dt2ts(dt: datetime) -> PBTimestamp:
+                ts = PBTimestamp()
+                ts.FromDatetime(dt)
+                return ts
+
+            time_filter = PBTimeFilter(
+                start=dt2ts(start_time) if start_time else None,
+                end=dt2ts(end_time) if end_time else None,
             )
-            async for response in cast(
-                AsyncIterable[PBReceiveMicrogridSensorsDataStreamResponse],
-                call_iterator,
+
+            incl_states = (
+                PBFilterOption.FILTER_OPTION_INCLUDE
+                if include_states
+                else PBFilterOption.FILTER_OPTION_EXCLUDE
+            )
+            include_options = PBReceiveMicrogridSensorsDataStreamRequest.IncludeOptions(
+                states=incl_states,
+            )
+
+            stream_filter = PBReceiveMicrogridSensorsDataStreamRequest.StreamFilter(
+                time_filter=time_filter,
+                resampling_options=PBResamplingOptions(
+                    resolution=(
+                        round(resampling_period.total_seconds())
+                        if resampling_period is not None
+                        else None
+                    )
+                ),
+                include_options=include_options,
+            )
+
+            metric_conns_pb = [
+                PBMetricConnections(
+                    metric=metric.to_proto(),
+                    connections=[],
+                )
+                for metric in metrics
+            ]
+
+            request = PBReceiveMicrogridSensorsDataStreamRequest(
+                microgrid_sensors=microgrid_sensors_pb,
+                metrics=metric_conns_pb,
+                filter=stream_filter,
+            )
+
+            def transform_response(
+                response: PBReceiveMicrogridSensorsDataStreamResponse,
+            ) -> SensorsDataBatch:
+                return SensorsDataBatch(response)
+
+            async def stream_method() -> (
+                AsyncIterable[PBReceiveMicrogridSensorsDataStreamResponse]
             ):
-                yield response
+                call_iterator = self.stub.ReceiveMicrogridSensorsDataStream(
+                    request, metadata=self._metadata
+                )
+                async for response in cast(
+                    AsyncIterable[PBReceiveMicrogridSensorsDataStreamResponse],
+                    call_iterator,
+                ):
+                    yield response
 
-        broadcaster = GrpcStreamBroadcaster(
-            stream_name="microgrid-sensors-data-stream",
-            stream_method=stream_method,
-            transform=transform_response,
-            retry_strategy=None,
-        )
+            self._sensors_data_streams[stream_key] = GrpcStreamBroadcaster(
+                stream_name="microgrid-sensors-data-stream",
+                stream_method=stream_method,
+                transform=transform_response,
+            )
 
-        return broadcaster.new_receiver()
+        return self._sensors_data_streams[stream_key].new_receiver()
 
     async def receive_aggregated_data(
         self,
