@@ -14,4 +14,4 @@
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+* Take out 'async' from  'receive_microgrid_sensors_data' and 'receive_single_sensor_data'.

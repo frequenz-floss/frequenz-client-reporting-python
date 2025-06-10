@@ -316,7 +316,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         return self._components_data_streams[stream_key].new_receiver()
 
     # pylint: disable=too-many-arguments
-    async def receive_single_sensor_data(
+    def receive_single_sensor_data(
         self,
         *,
         microgrid_id: int,
@@ -341,7 +341,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         Returns:
                 A receiver of `MetricSample`s.
         """
-        receiver = await self._receive_microgrid_sensors_data_batch(
+        receiver = self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=[(microgrid_id, [sensor_id])],
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
             start_time=start_time,
@@ -352,7 +352,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         return BatchUnrollReceiver(receiver)
 
     # pylint: disable=too-many-arguments
-    async def receive_microgrid_sensors_data(
+    def receive_microgrid_sensors_data(
         self,
         *,
         microgrid_sensors: list[tuple[int, list[int]]],
@@ -376,7 +376,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         Returns:
             A receiver of `MetricSample`s.
         """
-        receiver = await self._receive_microgrid_sensors_data_batch(
+        receiver = self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=microgrid_sensors,
             metrics=[metrics] if isinstance(metrics, Metric) else metrics,
             start_time=start_time,
@@ -388,7 +388,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
     # pylint: disable=too-many-arguments
     # pylint: disable=too-many-locals
-    async def _receive_microgrid_sensors_data_batch(
+    def _receive_microgrid_sensors_data_batch(
         self,
         *,
         microgrid_sensors: list[tuple[int, list[int]]],
