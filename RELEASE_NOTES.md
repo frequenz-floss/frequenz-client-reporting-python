@@ -6,8 +6,7 @@
 
 ## Upgrading
 
-- The `receive_aggregated_data` method now returns a `Receiver`, which provides more flexibility that the previous `AsyncIterator`.
-- The `receive_microgrid_sensors_data`, `receive_single_sensor_data` and `receive_aggregated_data` methods are no-longer `async`.
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ## New Features
 
