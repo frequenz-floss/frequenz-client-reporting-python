@@ -230,7 +230,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         include_states: bool = False,
         include_bounds: bool = False,
     ) -> Receiver[ComponentsDataBatch]:
-        """Return a GrpcStreamBroadcaster for microgrid component data."""
+        """Return a Receiver for the microgrid component data stream."""
         stream_key = (
             tuple((mid, tuple(cids)) for mid, cids in microgrid_components),
             tuple(metric.name for metric in metrics),
@@ -349,7 +349,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             include_states: Whether to include the state data.
 
         Returns:
-                A receiver of `MetricSample`s.
+            A receiver of `MetricSample`s.
         """
         receiver = self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=[(microgrid_id, [sensor_id])],
@@ -419,7 +419,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             include_states: Whether to include the state data.
 
         Returns:
-            A GrpcStreamBroadcaster that can be used to receive sensor data batches.
+            A receiver of `SensorsDataBatch`s.
         """
         stream_key = (
             tuple((mid, tuple(sids)) for mid, sids in microgrid_sensors),
