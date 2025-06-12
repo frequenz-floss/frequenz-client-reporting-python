@@ -10,7 +10,9 @@
 
 ## New Features
 
-<!-- Here goes the main new features and examples or instructions on how to use them -->
+* Add HMAC generation capabilities.
+    * The new CLI option "key" can be used to provide the server's key.
+    * The client itself now has a "key" argument in the constructor.
 
 ## Bug Fixes
 

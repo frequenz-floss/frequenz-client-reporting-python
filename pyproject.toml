@@ -32,7 +32,7 @@ dependencies = [
   "frequenz-client-common >= 0.3.0, < 0.4",
   "grpcio >=1.70.0, < 2",
   "protobuf >= 5.29.3, < 7",
-  "frequenz-client-base >= 0.8.0, < 0.11.0",
+  "frequenz-client-base >= 0.11.0, < 0.12.0",
 ]
 dynamic = ["version"]
 

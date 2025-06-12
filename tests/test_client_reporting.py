@@ -19,21 +19,26 @@ async def test_client_initialization() -> None:
     # Parameters for the ReportingApiClient initialization
     server_url = "gprc://localhost:50051"
     key = "some-api-key"
+    sign_secret = "hunter2"
     connect = True
     channel_defaults = ChannelOptions()
 
     with patch.object(BaseApiClient, "__init__", return_value=None) as mock_base_init:
-        client = ReportingApiClient(
-            server_url, key=key, connect=connect, channel_defaults=channel_defaults
+        ReportingApiClient(
+            server_url,
+            auth_key=key,
+            connect=connect,
+            channel_defaults=channel_defaults,
+            sign_secret=sign_secret,
         )  # noqa: F841
         mock_base_init.assert_called_once_with(
             server_url,
             ReportingStub,
             connect=connect,
             channel_defaults=channel_defaults,
+            auth_key=key,
+            sign_secret=sign_secret,
         )
-
-        assert client._metadata == (("key", key),)  # pylint: disable=W0212
 
 
 def test_components_data_batch_is_empty_true() -> None:

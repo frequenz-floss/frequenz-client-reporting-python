@@ -64,10 +64,13 @@ from ._types import (
 class ReportingApiClient(BaseApiClient[ReportingStub]):
     """A client for the Reporting service."""
 
+    # pylint: disable-next=too-many-arguments
     def __init__(
         self,
         server_url: str,
-        key: str | None = None,
+        *,
+        auth_key: str | None = None,
+        sign_secret: str | None = None,
         connect: bool = True,
         channel_defaults: ChannelOptions = ChannelOptions(),  # default options
     ) -> None:
@@ -75,7 +78,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
         Args:
             server_url: The URL of the Reporting service.
-            key: The API key for the authorization.
+            auth_key: The API key for the authorization.
+            sign_secret: The secret to use for HMAC signing the message
             connect: Whether to connect to the server immediately.
             channel_defaults: The default channel options.
         """
@@ -84,6 +88,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             ReportingStub,
             connect=connect,
             channel_defaults=channel_defaults,
+            auth_key=auth_key,
+            sign_secret=sign_secret,
         )
 
         self._components_data_streams: dict[
@@ -128,8 +134,6 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             ],
             GrpcStreamBroadcaster[PBAggregatedStreamResponse, MetricSample],
         ] = {}
-
-        self._metadata = (("key", key),) if key else ()
 
     @property
     def stub(self) -> ReportingStub:
@@ -309,7 +313,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
                 AsyncIterable[PBReceiveMicrogridComponentsDataStreamResponse]
             ):
                 call_iterator = self.stub.ReceiveMicrogridComponentsDataStream(
-                    request, metadata=self._metadata
+                    request,
                 )
                 return cast(
                     AsyncIterable[PBReceiveMicrogridComponentsDataStreamResponse],
@@ -493,9 +497,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             def stream_method() -> (
                 AsyncIterable[PBReceiveMicrogridSensorsDataStreamResponse]
             ):
-                call_iterator = self.stub.ReceiveMicrogridSensorsDataStream(
-                    request, metadata=self._metadata
-                )
+                call_iterator = self.stub.ReceiveMicrogridSensorsDataStream(request)
                 return cast(
                     AsyncIterable[PBReceiveMicrogridSensorsDataStreamResponse],
                     call_iterator,
@@ -588,7 +590,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             def stream_method() -> AsyncIterable[PBAggregatedStreamResponse]:
                 call_iterator = (
                     self.stub.ReceiveAggregatedMicrogridComponentsDataStream(
-                        request, metadata=self._metadata
+                        request,
                     )
                 )
 
