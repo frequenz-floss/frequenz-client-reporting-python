@@ -79,9 +79,15 @@ def main() -> None:
         "--format", choices=["iter", "csv", "dict"], help="Output format", default="csv"
     )
     parser.add_argument(
-        "--key",
+        "--auth_key",
         type=str,
         help="API key",
+        default=None,
+    )
+    parser.add_argument(
+        "--sign_secret",
+        type=str,
+        help="The secret to use for generating HMAC signatures",
         default=None,
     )
     args = parser.parse_args()
@@ -96,8 +102,9 @@ def main() -> None:
             states=args.states,
             bounds=args.bounds,
             service_address=args.url,
-            key=args.key,
+            auth_key=args.key,
             fmt=args.format,
+            sign_secret=args.sign_secret,
         )
     )
 
@@ -114,8 +121,9 @@ async def run(  # noqa: DOC502
     states: bool,
     bounds: bool,
     service_address: str,
-    key: str,
+    auth_key: str,
     fmt: str,
+    sign_secret: str | None,
 ) -> None:
     """Test the ReportingApiClient.
 
@@ -129,13 +137,16 @@ async def run(  # noqa: DOC502
         states: include states in the output
         bounds: include bounds in the output
         service_address: service address
-        key: API key
+        auth_key: API key
         fmt: output format
+        sign_secret: secret used for creating HMAC signatures
 
     Raises:
         ValueError: if output format is invalid
     """
-    client = ReportingApiClient(service_address, key)
+    client = ReportingApiClient(
+        service_address, auth_key=auth_key, sign_secret=sign_secret
+    )
 
     metrics = [Metric[mn] for mn in metric_names]
 

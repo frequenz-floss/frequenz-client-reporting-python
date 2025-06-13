@@ -32,7 +32,7 @@ dependencies = [
   "frequenz-client-common >= 0.3.0, < 0.4",
   "grpcio >=1.70.0, < 2",
   "protobuf >= 5.29.3, < 7",
-  "frequenz-client-base >= 0.8.0, < 0.11.0",
+  "frequenz-client-base >= 0.11.0, < 0.12.0",
 ]
 dynamic = ["version"]
 
@@ -156,6 +156,10 @@ disable = [
 
 [tool.pytest.ini_options]
 addopts = "-vv"
+testpaths = ["tests", "src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+required_plugins = ["pytest-asyncio", "pytest-mock"]
 filterwarnings = [
   "error",
   "once::DeprecationWarning",
@@ -164,10 +168,6 @@ filterwarnings = [
   # chars as this is a regex
   'ignore:Protobuf gencode version .*exactly one major version older.*:UserWarning',
 ]
-testpaths = ["tests", "src"]
-asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
-required_plugins = ["pytest-asyncio", "pytest-mock"]
 
 [tool.mypy]
 explicit_package_bases = true
