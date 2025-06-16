@@ -102,7 +102,7 @@ def main() -> None:
             states=args.states,
             bounds=args.bounds,
             service_address=args.url,
-            auth_key=args.key,
+            auth_key=args.auth_key,
             fmt=args.format,
             sign_secret=args.sign_secret,
         )
