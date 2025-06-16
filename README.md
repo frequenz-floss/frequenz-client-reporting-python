@@ -39,14 +39,18 @@ pip install frequenz-client-reporting==$VERSION
 
 ```python
 from datetime import datetime, timedelta
+import os
 
 from frequenz.client.common.metric import Metric
 from frequenz.client.reporting import ReportingApiClient
 
 # Change server address
 SERVER_URL = "grpc://replace-this-with-your-server-url:port"
-API_KEY = open('api_key.txt').read().strip()
-client = ReportingApiClient(server_url=SERVER_URL, key=API_KEY)
+AUTH_KEY = os.environ['REPORTING_API_AUTH_KEY'].strip()
+# It is recommended to use a proper secret store to get the secret
+# For local development, make sure not to leave it in the shell history
+SIGN_SECRET= os.environ['REPORTING_API_SIGN_SECRET'].strip()
+client = ReportingApiClient(server_url=SERVER_URL, auth_key=AUTH_KEY, sign_secret=SIGN_SECRET)
 ```
 
 Besides the `microgrid_id`, `component_id`s, `metrics`, start, and end time,
@@ -157,7 +161,8 @@ microgrid component data from the reporting API.
 ```bash
 reporting-cli \
     --url localhost:4711 \
-    --key=$(<api_key.txt)
+    --auth_key=$AUTH_KEY
+    --sign_secret=$SIGN_SECRET
     --mid 42 \
     --cid 23 \
     --metrics AC_ACTIVE_POWER AC_REACTIVE_POWER \
