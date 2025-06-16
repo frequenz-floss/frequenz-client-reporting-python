@@ -6,13 +6,14 @@
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+* The `key` parameter of the client has been renamed to `auth_key`
 
 ## New Features
 
 * Add HMAC generation capabilities.
-    * The new CLI option "key" can be used to provide the server's key.
-    * The client itself now has a "key" argument in the constructor.
+    * The new CLI option "sign_secret" can be used to provide the server's HMAC secret.
+    * The client itself now has a "sign_secret" argument in the constructor.
+    * Update documentation describing how to use the above options.
 
 ## Bug Fixes
 
