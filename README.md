@@ -75,7 +75,7 @@ This method supports:
 # Asynchronously collect metric data samples into a list
 data = [
     sample async for sample in
-    client.list_single_component_data(
+    client.receive_single_component_data(
         microgrid_id=1,  # ID of the microgrid to query
         component_id=100,  # ID of the specific component to query
         metrics=[  # List of metrics to retrieve
