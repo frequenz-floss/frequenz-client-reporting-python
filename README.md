@@ -127,7 +127,7 @@ microgrid_components = [
 
 data = [
     sample async for sample in
-    client.list_microgrid_components_data(
+    client.receive_microgrid_components_data(
         microgrid_components=microgrid_components,
         metrics=[Metric.AC_ACTIVE_POWER, Metric.AC_REACTIVE_POWER],
         start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
