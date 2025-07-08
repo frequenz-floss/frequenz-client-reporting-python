@@ -73,8 +73,8 @@ class GenericDataBatch:
     def __iter__(self) -> Iterator[MetricSample]:
         """Get generator that iterates over all values in the batch.
 
-        Note: So far only `SimpleMetricSample` in the `MetricSampleVariant`
-        message is supported.
+        Note: `SimpleMetricValue` and `AggregatedMetricValue` in
+        the `MetricValueVariant` message are supported.
 
 
         Yields:
@@ -93,11 +93,13 @@ class GenericDataBatch:
             for sample in getattr(item, "metric_samples", []):
                 ts = sample.sampled_at.ToDatetime().replace(tzinfo=timezone.utc)
                 met = Metric.from_proto(sample.metric).name
-                value = (
-                    sample.value.simple_metric.value
-                    if sample.value.HasField("simple_metric")
-                    else math.nan
-                )
+
+                if sample.value.HasField("simple_metric"):
+                    value = sample.value.simple_metric.value
+                elif sample.value.HasField("aggregated_metric"):
+                    value = sample.value.aggregated_metric.avg_value
+                else:
+                    value = math.nan
                 yield MetricSample(ts, mid, cid, met, value)
 
                 if self.has_bounds:
