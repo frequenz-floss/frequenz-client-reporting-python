@@ -3,7 +3,6 @@
 
 """Types for the Reporting API client."""
 
-import math
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -70,11 +69,13 @@ class GenericDataBatch:
                 return True
         return False
 
+    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-branches
     def __iter__(self) -> Iterator[MetricSample]:
         """Get generator that iterates over all values in the batch.
 
-        Note: So far only `SimpleMetricSample` in the `MetricSampleVariant`
-        message is supported.
+        `SimpleMetricSample` and `AggregatedMetricSample` in the
+        `MetricSampleVariant` message is supported.
 
 
         Yields:
@@ -93,12 +94,26 @@ class GenericDataBatch:
             for sample in getattr(item, "metric_samples", []):
                 ts = sample.sampled_at.ToDatetime().replace(tzinfo=timezone.utc)
                 met = Metric.from_proto(sample.metric).name
-                value = (
-                    sample.value.simple_metric.value
-                    if sample.value.HasField("simple_metric")
-                    else math.nan
-                )
-                yield MetricSample(ts, mid, cid, met, value)
+
+                # Handle simple_metric
+                if sample.value.HasField("simple_metric"):
+                    value = sample.value.simple_metric.value
+                    yield MetricSample(ts, mid, cid, met, value)
+
+                # Handle aggregated_metric
+                if sample.value.HasField("aggregated_metric"):
+                    agg = sample.value.aggregated_metric
+                    # Average value
+                    yield MetricSample(ts, mid, cid, f"{met}_avg", agg.avg_value)
+                    # Min value if present
+                    if agg.HasField("min_value"):
+                        yield MetricSample(ts, mid, cid, f"{met}_min", agg.min_value)
+                    # Max value if present
+                    if agg.HasField("max_value"):
+                        yield MetricSample(ts, mid, cid, f"{met}_max", agg.max_value)
+                    # Optionally yield individual raw values
+                    for i, raw in enumerate(agg.raw_values):
+                        yield MetricSample(ts, mid, cid, f"{met}_raw_{i}", raw)
 
                 if self.has_bounds:
                     for i, bound in enumerate(sample.bounds):
