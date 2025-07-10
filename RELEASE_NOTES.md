@@ -6,12 +6,12 @@
 
 ## Upgrading
 
-* Update to frequenz-api-reporting v0.8.0
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ## New Features
 
-* Expose aggregated metrics if available.
+<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ## Bug Fixes
 
-- Update example in README to use `receive_single_component_data`.
+<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
