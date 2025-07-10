@@ -260,8 +260,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
                 return ts
 
             time_filter = PBTimeFilter(
-                start=dt2ts(start_time) if start_time else None,
-                end=dt2ts(end_time) if end_time else None,
+                start_time=dt2ts(start_time) if start_time else None,
+                end_time=dt2ts(end_time) if end_time else None,
             )
 
             incl_states = (
@@ -450,8 +450,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
                 return ts
 
             time_filter = PBTimeFilter(
-                start=dt2ts(start_time) if start_time else None,
-                end=dt2ts(end_time) if end_time else None,
+                start_time=dt2ts(start_time) if start_time else None,
+                end_time=dt2ts(end_time) if end_time else None,
             )
 
             incl_states = (
@@ -566,8 +566,8 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
                 return ts
 
             time_filter = PBTimeFilter(
-                start=dt2ts(start_time) if start_time else None,
-                end=dt2ts(end_time) if end_time else None,
+                start_time=dt2ts(start_time) if start_time else None,
+                end_time=dt2ts(end_time) if end_time else None,
             )
 
             stream_filter = PBAggregatedStreamRequest.AggregationStreamFilter(
