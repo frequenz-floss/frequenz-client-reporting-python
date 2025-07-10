@@ -92,7 +92,7 @@ class GenericDataBatch:
         for item in items:
             cid = getattr(item, self.id_attr)
             for sample in getattr(item, "metric_samples", []):
-                ts = sample.sample_time.ToDatetime().replace(tzinfo=timezone.utc)
+                ts = sample.sampled_at.ToDatetime().replace(tzinfo=timezone.utc)
                 met = Metric.from_proto(sample.metric).name
 
                 # Handle simple_metric
@@ -127,7 +127,7 @@ class GenericDataBatch:
                             )
 
             for state in getattr(item, "states", []):
-                ts = state.sample_time.ToDatetime().replace(tzinfo=timezone.utc)
+                ts = state.sampled_at.ToDatetime().replace(tzinfo=timezone.utc)
                 for category, category_items in {
                     "state": getattr(state, "states", []),
                     "warning": getattr(state, "warnings", []),
