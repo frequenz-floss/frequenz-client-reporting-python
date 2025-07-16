@@ -43,6 +43,7 @@ pip install frequenz-client-reporting==$VERSION
 
 To use the Reporting API client, you need to initialize it with the server URL and authentication credentials.
 The server URL should point to your Frequenz Reporting API instance, and you will need an authentication key and a signing secret.
+See [this documentation](https://github.com/frequenz-floss/frequenz-client-base-python/blob/v0.x.x/README.md#authorization-and-signing) for further details.
 
 > **Security Note**
 > Always keep your authentication key and signing secret secure. Do not hard-code them in your source code or share them publicly.
