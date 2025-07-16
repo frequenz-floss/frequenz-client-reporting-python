@@ -169,7 +169,29 @@ data = [
 ]
 ```
 
-### Optionally convert the data to a pandas DataFrame
+## Usage of formulas
+
+Formulas can be used to calculate a metric aggregated over multiple components or sensors.
+Note that this endpoint must be used with a `resampling_period`.
+Details on the formula syntax can be found [here](https://github.com/frequenz-floss/frequenz-microgrid-formula-engine-rs/tree/v0.x.x?tab=readme-ov-file#formula-syntax-overview).
+
+```python
+# Example formula to sum the values of two components.
+formula = "#1 + #2"
+data = [
+    sample async for sample in
+    client.receive_aggregated_data(
+        microgrid_id=microgrid_id,
+        metric=Metric.AC_ACTIVE_POWER,
+        aggregation_formula=formula,
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
+        resampling_period=resampling_period,
+    )
+]
+```
+
+## Optionally convert the data to a pandas DataFrame
 
 For easier data manipulation and analysis, you can convert the collected data into a pandas DataFrame.
 
