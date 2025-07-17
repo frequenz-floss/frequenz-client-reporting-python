@@ -68,10 +68,10 @@ client = ReportingApiClient(server_url=SERVER_URL, auth_key=AUTH_KEY, sign_secre
 ### Query metrics for a single microgrid and component
 
 This method supports:
-- Selecting specific `microgrid_id` and `component_id`
-- Choosing one or more `metrics` to retrieve
-- Defining a time range with `start_time` and `end_time`
-- Optional downsampling using `resampling_period` (e.g., `timedelta(minutes=15)`)
+- Selecting specific `microgrid_id` and `component_id`.
+- Choosing one or more `metrics` to retrieve. Available metrics are listed [here](https://github.com/frequenz-floss/frequenz-api-common/blob/v0.8.0/proto/frequenz/api/common/v1alpha8/metrics/metrics.proto).
+- Defining a time range with `start_time` and `end_time`.
+- Optional downsampling using `resampling_period` (e.g., `timedelta(minutes=15)`).
 
 ```python
 # Asynchronously collect metric data samples into a list
