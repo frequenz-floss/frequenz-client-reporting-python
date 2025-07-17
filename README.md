@@ -28,7 +28,8 @@ check out the [Contributing Guide](CONTRIBUTING.md).
 
 ## Usage
 
-Please also refer to [examples](https://github.com/frequenz-floss/frequenz-client-reporting-python/tree/HEAD/examples) for more detailed usage.
+Please also refer to source of the [CLI tool](https://github.com/frequenz-floss/frequenz-client-reporting-python/blob/v0.x.x/src/frequenz/client/reporting/cli/__main__.py)
+for a practical example of how to use the client.
 
 ### Installation
 
@@ -43,6 +44,7 @@ pip install frequenz-client-reporting==$VERSION
 
 To use the Reporting API client, you need to initialize it with the server URL and authentication credentials.
 The server URL should point to your Frequenz Reporting API instance, and you will need an authentication key and a signing secret.
+See [this documentation](https://github.com/frequenz-floss/frequenz-client-base-python/blob/v0.x.x/README.md#authorization-and-signing) for further details.
 
 > **Security Note**
 > Always keep your authentication key and signing secret secure. Do not hard-code them in your source code or share them publicly.
@@ -66,10 +68,10 @@ client = ReportingApiClient(server_url=SERVER_URL, auth_key=AUTH_KEY, sign_secre
 ### Query metrics for a single microgrid and component
 
 This method supports:
-- Selecting specific `microgrid_id` and `component_id`
-- Choosing one or more `metrics` to retrieve
-- Defining a time range with `start_time` and `end_time`
-- Optional downsampling using `resampling_period` (e.g., `timedelta(minutes=15)`)
+- Selecting specific `microgrid_id` and `component_id`.
+- Choosing one or more `metrics` to retrieve. Available metrics are listed [here](https://github.com/frequenz-floss/frequenz-api-common/blob/v0.8.0/proto/frequenz/api/common/v1alpha8/metrics/metrics.proto).
+- Defining a time range with `start_time` and `end_time`.
+- Optional downsampling using `resampling_period` (e.g., `timedelta(minutes=15)`).
 
 ```python
 # Asynchronously collect metric data samples into a list
@@ -168,7 +170,29 @@ data = [
 ]
 ```
 
-### Optionally convert the data to a pandas DataFrame
+## Usage of formulas
+
+Formulas can be used to calculate a metric aggregated over multiple components or sensors.
+Note that this endpoint must be used with a `resampling_period`.
+Details on the formula syntax can be found [here](https://github.com/frequenz-floss/frequenz-microgrid-formula-engine-rs/tree/v0.x.x?tab=readme-ov-file#formula-syntax-overview).
+
+```python
+# Example formula to sum the values of two components.
+formula = "#1 + #2"
+data = [
+    sample async for sample in
+    client.receive_aggregated_data(
+        microgrid_id=microgrid_id,
+        metric=Metric.AC_ACTIVE_POWER,
+        aggregation_formula=formula,
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
+        resampling_period=resampling_period,
+    )
+]
+```
+
+## Optionally convert the data to a pandas DataFrame
 
 For easier data manipulation and analysis, you can convert the collected data into a pandas DataFrame.
 
