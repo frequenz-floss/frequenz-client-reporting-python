@@ -954,7 +954,7 @@ Always keep your authentication key and signing secret secure. Do not hard-code 
 <h3 id="query-metrics-for-a-single-microgrid-and-component">Query metrics for a single microgrid and component<a class="headerlink" href="#query-metrics-for-a-single-microgrid-and-component" title="Permanent link">¤</a></h3>
 <p>This method supports:
 - Selecting specific <code>microgrid_id</code> and <code>component_id</code>.
-- Choosing one or more <code>metrics</code> to retrieve. Available metrics are listed <a href="https://github.com/frequenz-floss/frequenz-api-common/blob/v0.8.0/proto/frequenz/api/common/v1alpha8/metrics/metrics.proto">here</a>.
+- Choosing one or more <code>metrics</code> to retrieve. Available metrics are listed <a href="https://frequenz-floss.github.io/frequenz-api-common/v0.8/protobuf-reference/frequenz/api/common/v1alpha8/metrics/metrics/#frequenz-api-common-v1alpha8-metrics-Metric">here</a>.
 - Defining a time range with <code>start_time</code> and <code>end_time</code>.
 - Optional downsampling using <code>resampling_period</code> (e.g., <code>timedelta(minutes=15)</code>).</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Asynchronously collect metric data samples into a list</span>
