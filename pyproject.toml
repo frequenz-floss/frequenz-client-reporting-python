@@ -28,8 +28,8 @@ requires-python = ">= 3.11, < 4"
 dependencies = [
   "typing_extensions >= 4.6.1, < 5",
   "grpc-stubs == 1.53.0.6",
-  "frequenz-api-reporting >= 0.8.0, < 0.9",
-  "frequenz-client-common >= 0.3.0, < 0.4",
+  "frequenz-api-reporting @ git+https://github.com/frequenz-floss/frequenz-api-reporting.git@6c9bf0a06188ab232a661dcd539c3c2c7908f3cd",
+  "frequenz-client-common @ git+https://github.com/frequenz-floss/frequenz-client-common-python.git@1a8b09947fb88b65281686e11638433390c75d6e",
   "grpcio >=1.72.1, < 2",
   "protobuf >=6.31.1, < 7",
   "frequenz-client-base >= 0.11.0, < 0.12.0",
