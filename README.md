@@ -113,7 +113,7 @@ deactivate
 
 To access the API, a key has to be created via Kuiper and stored locally on your computer. For that go through the following steps:
 
-### 1 create .env file
+### 1. create .env file
 
 When creating the API key, you will get two keys. One is the API key itself and the other one is the API secret. Go to your projects directory and create a textfile named `.env` where you can store the API key and the API secret.
 Prepare the textfile as follows:
@@ -124,7 +124,7 @@ REPORTING_API_AUTH_KEY=
 REPORTING_API_SIGN_SECRET=
 ```
 
-### 2 Create API key via Kuiper
+### 2. Create API key via Kuiper
 
 Log into your Kuiper account and click on your email-address on the bottom left. Then continue with `API keys` and `Create API key`. The created API key will be shown in the UI. This is the only time, the API key will be shown to you. whenever you loose it, you have to create a new one.
 Copy the API key and the API secret and add it to the `.env` file.
