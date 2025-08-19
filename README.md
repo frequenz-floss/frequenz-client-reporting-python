@@ -25,20 +25,80 @@ The following platforms are officially supported (tested):
 If you want to know how to build this project and contribute to it, please
 check out the [Contributing Guide](CONTRIBUTING.md).
 
+## Getting Started
+
+To get started, follow the steps below to set up your development environment and run the client.
+
+### 1. Install VS Code
+
+Download and install **Visual Studio Code** from the [official website](https://code.visualstudio.com/).
+
+Once installed, add the following extensions:
+
+- [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)  
+- [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)  
+
+These enable Python development and interactive notebooks within VS Code.
+
+### 2. Set Up a Virtual Environment
+
+It is recommended to use a **virtual environment** for isolating dependencies.
+When using a virtual environment, you create something like a sandbox or containerized workspace that isolates dependencies and packages so they don’t conflict with the system or other projects. After creating the virtual environment, you can install all packages you need for the current project. To set up an initial virtual environment for using the Reporting API, go through the following steps:
+
+### Linux / macOS
+
+```bash
+# Create a virtual environment
+python3 -m venv .venv
+
+# Activate the environment
+source .venv/bin/activate
+
+# Install the version of the reporting client you want to use
+pip install frequenz-client-reporting==0.18.0
+
+# Install python-dotenv --> Used to load environment variables from a `.env` file into the projects environment
+pip install python-dotenv
+
+# Install ipkernel --> Python execution backend for Jupyter
+pip install ipkernel
+
+# Register the virtual environment as a kernel
+python -m ipykernel install --user --name=myenv --display-name "Python (myenv)"
+
+# Install pandas
+pip install pandas
+```
+
+## Create API Keys via Kuiper
+
+To access the API, a key has to be created via Kuiper and stored locally on your computer. For that go through the following steps:
+
+### 1 create .env file
+
+When creating the API key, you will get two keys. One is the API key itself and the other one is the API secret. Create a textfile named ".env" in your project folder where you can store the API key and the API secret.
+
+```bash
+# .env
+REPORTING_API_AUTH_KEY=
+REPORTING_API_SIGN_SECRET=
+```
+
+### 2 Create API key via Kuiper
+
+Log into your Kuiper account and click on your email-address on the bottom left. Then continue with "API keys" and "Create API key". The created API key will be shown in the UI. This is the only time, the API key will be shown to you. whenever you loose it, you have to create a new one.
+Copy the API key and the API secret and add it to the .env file.
+
+```bash
+# .env
+REPORTING_API_AUTH_KEY=EtQurK8LXA8vmEd4M6DqxeNp
+REPORTING_API_SIGN_SECRET=DCG5x7XrJa2hN3spRTjVyQk9w16xXqR6hEUkYcoCG9yjx7Pp
+```
 
 ## Usage
 
 Please also refer to source of the [CLI tool](https://github.com/frequenz-floss/frequenz-client-reporting-python/blob/v0.x.x/src/frequenz/client/reporting/cli/__main__.py)
 for a practical example of how to use the client.
-
-### Installation
-
-```bash
-# Choose the version you want to install
-VERSION=0.18.0
-pip install frequenz-client-reporting==$VERSION
-```
-
 
 ### Initialize the client
 
@@ -52,15 +112,16 @@ See [this documentation](https://github.com/frequenz-floss/frequenz-client-base-
 ```python
 from datetime import datetime, timedelta
 import os
+import pandas as pd
 
 from frequenz.client.common.metric import Metric
 from frequenz.client.reporting import ReportingApiClient
 
+load_dotenv()
+
 # Change server address
 SERVER_URL = "grpc://replace-this-with-your-server-url:port"
 AUTH_KEY = os.environ['REPORTING_API_AUTH_KEY'].strip()
-# It is recommended to use a proper secret store to get the secret
-# For local development, make sure not to leave it in the shell history
 SIGN_SECRET= os.environ['REPORTING_API_SIGN_SECRET'].strip()
 client = ReportingApiClient(server_url=SERVER_URL, auth_key=AUTH_KEY, sign_secret=SIGN_SECRET)
 ```
