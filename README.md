@@ -109,7 +109,7 @@ pip install pandas
 deactivate
 ```
 
-## Create API Keys via Kuiper
+## API Keys
 
 To access the API, a key has to be created via Kuiper and stored locally on your computer. For that go through the following steps:
 
