@@ -115,7 +115,7 @@ To access the API, a key has to be created via Kuiper and stored locally on your
 
 ### 1 create .env file
 
-When creating the API key, you will get two keys. One is the API key itself and the other one is the API secret. Go to your projects directory and create a textfile named ".env" in your project folder where you can store the API key and the API secret.
+When creating the API key, you will get two keys. One is the API key itself and the other one is the API secret. Go to your projects directory and create a textfile named `.env` where you can store the API key and the API secret.
 Prepare the textfile as follows:
 
 ```bash
@@ -126,8 +126,8 @@ REPORTING_API_SIGN_SECRET=
 
 ### 2 Create API key via Kuiper
 
-Log into your Kuiper account and click on your email-address on the bottom left. Then continue with "API keys" and "Create API key". The created API key will be shown in the UI. This is the only time, the API key will be shown to you. whenever you loose it, you have to create a new one.
-Copy the API key and the API secret and add it to the .env file.
+Log into your Kuiper account and click on your email-address on the bottom left. Then continue with `API keys` and `Create API key`. The created API key will be shown in the UI. This is the only time, the API key will be shown to you. whenever you loose it, you have to create a new one.
+Copy the API key and the API secret and add it to the `.env` file.
 
 ```bash
 # .env
@@ -142,15 +142,18 @@ for a practical example of how to use the client.
 
 ### Create a notebook
 
-Open your projects directory with VS Code. You should see your .venv and .env files in the directory when using VS Code.
-Create a new .ipynb file (Jupyter notebook file) in the directory. When selecting the empty ipynb file, you will find "Select Kernel" on the top right of the file. Click on it and select "Jupyter Kernel" > "Python (myenv). Now the notebook will use your virtual environment as an interpreter.
+Open your projects directory with VS Code. You should see your `.venv` and `.env` files in the directory when using VS Code.
+Create a new `.ipynb` file (Jupyter notebook file) in the directory. When selecting the empty ipynb file, you will find `Select Kernel` on the top right of the file. Click on it and select `Jupyter Kernel > Python (myenv)`. Now the notebook will use your virtual environment as an interpreter.
 
 ### Initialize the client
 
 To use the Reporting API client, you need to initialize it with the server URL and authentication credentials.
 The server URL should point to your Frequenz Reporting API instance, and you will need an authentication key and a signing secret, as described above.
 
-> **Security Note**
+> **SERVER URL:**
+> Please ask your service administrator for the SERVER URL
+
+> **Security Note:**
 > Always keep your authentication key and signing secret secure. Do not hard-code them in your source code or share them publicly.
 
 ```python
