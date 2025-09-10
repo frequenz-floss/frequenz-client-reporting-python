@@ -31,6 +31,9 @@ check out the [Contributing Guide](CONTRIBUTING.md).
 Please also refer to source of the [CLI tool](https://github.com/frequenz-floss/frequenz-client-reporting-python/blob/v0.x.x/src/frequenz/client/reporting/cli/__main__.py)
 for a practical example of how to use the client.
 
+> [!TIP]
+> You can also check the [Newcomers Tutorial](https://frequenz-floss.github.io/frequenz-client-reporting-python/tutorials/newcomer) if you don't have any experience working with Python.
+
 ### Installation
 
 ```bash
