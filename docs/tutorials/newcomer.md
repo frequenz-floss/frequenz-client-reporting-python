@@ -41,18 +41,15 @@ pip install frequenz-client-reporting==0.18.0
 # --> Used to load environment variables from a `.env` file into the projects environment
 pip install python-dotenv
 
-# Install ipkernel
+# Install ipykernel
 # --> Python execution backend for Jupyter
-pip install ipkernel
+pip install ipykernel
 
 # Register the virtual environment as a kernel
 python -m ipykernel install --user --name=myenv --display-name "Python (myenv)"
 
-# Install pandas
-pip install pandas
-
-# Deactivate the environment
-deactivate
+# Deactivate the environment (only when you are finished working with this project)
+#deactivate
 ```
 
 ### Windows (PowerShell)
@@ -82,9 +79,6 @@ pip install ipykernel
 
 # Register the virtual environment as a kernel
 python -m ipykernel install --user --name=myenv --display-name "Python (myenv)"
-
-# Install pandas
-pip install pandas
 
 # Deactivate the environment (only when you are finished working with this project)
 #deactivate
@@ -142,7 +136,6 @@ The server URL should point to your Frequenz Reporting API instance, and you wil
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import os
-import pandas as pd
 
 # Import Metrics and ReportingApiClient
 from frequenz.client.common.metric import Metric
