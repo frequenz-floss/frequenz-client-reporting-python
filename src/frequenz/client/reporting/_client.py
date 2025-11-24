@@ -8,42 +8,44 @@ from datetime import datetime, timedelta
 from typing import cast
 
 # pylint: disable=no-name-in-module
-from frequenz.api.common.v1.microgrid.microgrid_pb2 import (
-    MicrogridComponentIDs as PBMicrogridComponentIDs,
+from frequenz.api.common.v1alpha8.microgrid.microgrid_pb2 import (
+    MicrogridElectricalComponentIDs as PBMicrogridComponentIDs,
 )
-from frequenz.api.common.v1.microgrid.microgrid_pb2 import (
+from frequenz.api.common.v1alpha8.microgrid.microgrid_pb2 import (
     MicrogridSensorIDs as PBMicrogridSensorIDs,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     AggregationConfig as PBAggregationConfig,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import FilterOption as PBFilterOption
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
+    FilterOption as PBFilterOption,
+)
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     MetricConnections as PBMetricConnections,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveAggregatedMicrogridComponentsDataStreamRequest as PBAggregatedStreamRequest,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveAggregatedMicrogridComponentsDataStreamResponse as PBAggregatedStreamResponse,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveMicrogridComponentsDataStreamRequest as PBReceiveMicrogridComponentsDataStreamRequest,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveMicrogridComponentsDataStreamResponse as PBReceiveMicrogridComponentsDataStreamResponse,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveMicrogridSensorsDataStreamRequest as PBReceiveMicrogridSensorsDataStreamRequest,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveMicrogridSensorsDataStreamResponse as PBReceiveMicrogridSensorsDataStreamResponse,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ResamplingOptions as PBResamplingOptions,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import TimeFilter as PBTimeFilter
-from frequenz.api.reporting.v1.reporting_pb2_grpc import ReportingStub
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import TimeFilter as PBTimeFilter
+from frequenz.api.reporting.v1alpha10.reporting_pb2_grpc import ReportingStub
 from frequenz.channels import Receiver
 from frequenz.client.base.channel import ChannelOptions
 from frequenz.client.base.client import BaseApiClient
@@ -250,7 +252,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             or not self._components_data_streams[stream_key].is_running
         ):
             microgrid_components_pb = [
-                PBMicrogridComponentIDs(microgrid_id=mid, component_ids=cids)
+                PBMicrogridComponentIDs(microgrid_id=mid, electrical_component_ids=cids)
                 for mid, cids in microgrid_components
             ]
 

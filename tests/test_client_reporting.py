@@ -5,7 +5,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from frequenz.api.reporting.v1.reporting_pb2_grpc import ReportingStub
+from frequenz.api.reporting.v1alpha10.reporting_pb2_grpc import ReportingStub
 from frequenz.client.base.channel import ChannelOptions
 from frequenz.client.base.client import BaseApiClient
 

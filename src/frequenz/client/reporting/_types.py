@@ -9,13 +9,13 @@ from datetime import datetime, timezone
 from typing import Any, NamedTuple
 
 # pylint: disable=no-name-in-module
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveAggregatedMicrogridComponentsDataStreamResponse as PBAggregatedStreamResponse,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveMicrogridComponentsDataStreamResponse as PBReceiveMicrogridComponentsDataStreamResponse,
 )
-from frequenz.api.reporting.v1.reporting_pb2 import (
+from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveMicrogridSensorsDataStreamResponse as PBReceiveMicrogridSensorsDataStreamResponse,
 )
 
