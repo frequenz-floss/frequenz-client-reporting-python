@@ -49,7 +49,7 @@ from frequenz.client.base.channel import ChannelOptions
 from frequenz.client.base.client import BaseApiClient
 from frequenz.client.base.exception import ClientNotConnected
 from frequenz.client.base.streaming import GrpcStreamBroadcaster
-from frequenz.client.common.metric import Metric
+from frequenz.client.common.metrics import Metric
 from google.protobuf.timestamp_pb2 import Timestamp as PBTimestamp
 
 from ._batch_unroll_receiver import BatchUnrollReceiver
@@ -294,7 +294,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             )
 
             metric_conns_pb = [
-                PBMetricConnections(metric=metric.to_proto(), connections=[])
+                PBMetricConnections(metric=metric.value, connections=[])
                 for metric in metrics
             ]
 
@@ -477,7 +477,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
             metric_conns_pb = [
                 PBMetricConnections(
-                    metric=metric.to_proto(),
+                    metric=metric.value,
                     connections=[],
                 )
                 for metric in metrics
@@ -556,7 +556,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
             aggregation_config = PBAggregationConfig(
                 microgrid_id=microgrid_id,
-                metric=metric.to_proto(),
+                metric=metric.value,
                 aggregation_formula=aggregation_formula,
             )
 

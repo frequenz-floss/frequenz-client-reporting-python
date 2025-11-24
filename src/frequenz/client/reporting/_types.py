@@ -20,7 +20,7 @@ from frequenz.api.reporting.v1.reporting_pb2 import (
 )
 
 # pylint: enable=no-name-in-module
-from frequenz.client.common.metric import Metric
+from frequenz.client.common.metrics import Metric
 
 
 class MetricSample(NamedTuple):
@@ -92,8 +92,8 @@ class GenericDataBatch:
         for item in items:
             cid = getattr(item, self.id_attr)
             for sample in getattr(item, "metric_samples", []):
-                ts = sample.sampled_at.ToDatetime().replace(tzinfo=timezone.utc)
-                met = Metric.from_proto(sample.metric).name
+                ts = sample.sample_time.ToDatetime().replace(tzinfo=timezone.utc)
+                met = Metric(sample.metric).name
 
                 # Handle simple_metric
                 if sample.value.HasField("simple_metric"):
@@ -126,8 +126,8 @@ class GenericDataBatch:
                                 ts, mid, cid, f"{met}_bound_{i}_upper", bound.upper
                             )
 
-            for state in getattr(item, "states", []):
-                ts = state.sampled_at.ToDatetime().replace(tzinfo=timezone.utc)
+            for state in getattr(item, "state_snapshots", []):
+                ts = state.origin_time.ToDatetime().replace(tzinfo=timezone.utc)
                 for category, category_items in {
                     "state": getattr(state, "states", []),
                     "warning": getattr(state, "warnings", []),
@@ -150,7 +150,10 @@ class ComponentsDataBatch(GenericDataBatch):
             data_pb: The underlying protobuf message.
         """
         super().__init__(
-            data_pb, id_attr="component_id", items_attr="components", has_bounds=True
+            data_pb,
+            id_attr="electrical_component_id",
+            items_attr="components",
+            has_bounds=True,
         )
 
 
