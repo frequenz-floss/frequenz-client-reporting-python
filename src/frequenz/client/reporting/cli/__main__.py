@@ -8,7 +8,7 @@ import asyncio
 from datetime import datetime, timedelta
 from typing import AsyncIterator
 
-from frequenz.client.common.metric import Metric
+from frequenz.client.common.metrics import Metric
 
 from frequenz.client.reporting import ReportingApiClient
 from frequenz.client.reporting._types import MetricSample

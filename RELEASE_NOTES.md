@@ -2,11 +2,12 @@
 
 ## Summary
 
-<!-- Here goes a general summary of what this release is about -->
+> **Warning:** This client is compatible *only* with Reporting API `v1alpha10` or later.
+> Using with services that use an older API version **will cause failures**.
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+* Breaking change to reporting API v1alpha10.
 
 ## New Features
 
