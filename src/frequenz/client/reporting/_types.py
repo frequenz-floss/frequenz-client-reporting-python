@@ -5,7 +5,7 @@
 
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any, NamedTuple
 
 # pylint: disable=no-name-in-module
@@ -21,6 +21,7 @@ from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
 
 # pylint: enable=no-name-in-module
 from frequenz.client.common.metrics import Metric
+from frequenz.client.common.proto import datetime_from_proto, enum_from_proto
 
 
 class MetricSample(NamedTuple):
@@ -92,8 +93,8 @@ class GenericDataBatch:
         for item in items:
             cid = getattr(item, self.id_attr)
             for sample in getattr(item, "metric_samples", []):
-                ts = sample.sample_time.ToDatetime().replace(tzinfo=timezone.utc)
-                met = Metric(sample.metric).name
+                ts = datetime_from_proto(sample.sample_time)
+                met = enum_from_proto(sample.metric, Metric, allow_invalid=False).name
 
                 # Handle simple_metric
                 if sample.value.HasField("simple_metric"):
@@ -127,7 +128,7 @@ class GenericDataBatch:
                             )
 
             for state in getattr(item, "state_snapshots", []):
-                ts = state.origin_time.ToDatetime().replace(tzinfo=timezone.utc)
+                ts = datetime_from_proto(state.origin_time)
                 for category, category_items in {
                     "state": getattr(state, "states", []),
                     "warning": getattr(state, "warnings", []),
@@ -180,9 +181,7 @@ class AggregatedMetric:
     def sample(self) -> MetricSample:
         """Return the aggregated metric sample."""
         return MetricSample(
-            timestamp=self._data_pb.sample.sample_time.ToDatetime().replace(
-                tzinfo=timezone.utc
-            ),
+            timestamp=datetime_from_proto(self._data_pb.sample.sample_time),
             microgrid_id=self._data_pb.aggregation_config.microgrid_id,
             component_id=self._data_pb.aggregation_config.aggregation_formula,
             metric=Metric(self._data_pb.aggregation_config.metric).name,
