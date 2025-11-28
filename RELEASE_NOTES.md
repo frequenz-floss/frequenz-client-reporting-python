@@ -8,6 +8,7 @@
 ## Upgrading
 
 * Breaking change to reporting API v1alpha10.
+* Switch to new `metrics` package from client-common.
 
 ## New Features
 
