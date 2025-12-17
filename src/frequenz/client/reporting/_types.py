@@ -3,6 +3,7 @@
 
 """Types for the Reporting API client."""
 
+import math
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from datetime import datetime
@@ -180,10 +181,25 @@ class AggregatedMetric:
 
     def sample(self) -> MetricSample:
         """Return the aggregated metric sample."""
-        return MetricSample(
-            timestamp=datetime_from_proto(self._data_pb.sample.sample_time),
-            microgrid_id=self._data_pb.aggregation_config.microgrid_id,
-            component_id=self._data_pb.aggregation_config.aggregation_formula,
-            metric=Metric(self._data_pb.aggregation_config.metric).name,
-            value=self._data_pb.sample.sample.value,
+        config = self._data_pb.aggregation_config
+        sample = self._data_pb.sample
+
+        timestamp = datetime_from_proto(sample.sample_time)
+        microgrid_id = config.microgrid_id
+        component_id = config.aggregation_formula
+        metric = Metric(config.metric).name
+        # Ignoring this verification results in
+        # values of zero if the field is not set.
+        if sample.HasField("sample") and sample.sample.HasField("value"):
+            value = sample.sample.value
+        else:
+            value = math.nan
+
+        ret = MetricSample(
+            timestamp=timestamp,
+            microgrid_id=microgrid_id,
+            component_id=component_id,
+            metric=metric,
+            value=value,
         )
+        return ret
