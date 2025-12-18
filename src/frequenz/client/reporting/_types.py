@@ -190,7 +190,7 @@ class AggregatedMetric:
         metric = Metric(config.metric).name
         # Ignoring this verification results in
         # values of zero if the field is not set.
-        if sample.HasField("sample") and sample.sample.HasField("value"):
+        if sample.HasField("sample"):
             value = sample.sample.value
         else:
             value = math.nan
