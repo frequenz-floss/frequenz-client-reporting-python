@@ -14,4 +14,4 @@
 
 ## Bug Fixes
 
-* Fix default value of formula-aggregated metrics when no data was sent.
+* Remove invalid HasField check on scalar which can cause failure retrieving formula-aggregated metrics.
