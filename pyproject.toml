@@ -80,7 +80,7 @@ dev-pylint = [
   "pylint == 4.0.4",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-client-reporting[dev-mkdocs,dev-noxfile,dev-pytest]",
-  "pandas >= 2, < 3",  # Only required for example
+  "pandas >= 2, < 4",  # Only required for example
 ]
 dev-pytest = [
   "pytest == 9.0.2",
@@ -93,7 +93,7 @@ dev = [
   "frequenz-client-reporting[dev-mkdocs,dev-flake8,dev-formatting,dev-mkdocs,dev-mypy,dev-noxfile,dev-pylint,dev-pytest]",
 ]
 examples = [
-    "pandas >= 2, < 3",
+    "pandas >= 2, < 4",
 ]
 
 [project.urls]
