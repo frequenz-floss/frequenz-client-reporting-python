@@ -119,14 +119,14 @@ class GenericDataBatch:
 
                 if self.has_bounds:
                     for i, bound in enumerate(sample.bounds):
-                        if bound.lower:
-                            yield MetricSample(
-                                ts, mid, cid, f"{met}_bound_{i}_lower", bound.lower
-                            )
-                        if bound.upper:
-                            yield MetricSample(
-                                ts, mid, cid, f"{met}_bound_{i}_upper", bound.upper
-                            )
+                        lower = bound.lower if bound.HasField("lower") else -math.inf
+                        yield MetricSample(
+                            ts, mid, cid, f"{met}_bound_{i}_lower", lower
+                        )
+                        upper = bound.upper if bound.HasField("upper") else math.inf
+                        yield MetricSample(
+                            ts, mid, cid, f"{met}_bound_{i}_upper", upper
+                        )
 
             for state in getattr(item, "state_snapshots", []):
                 ts = datetime_from_proto(state.origin_time)

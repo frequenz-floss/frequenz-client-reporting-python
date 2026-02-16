@@ -14,4 +14,4 @@
 
 ## Bug Fixes
 
-* Remove invalid HasField check on scalar which can cause failure retrieving formula-aggregated metrics.
+* Fixes a bug where bounds of 0 were ignored and ensure the client always returns a pair of upper and lower bounds, were unset bounds are represented by +/- infinity.
