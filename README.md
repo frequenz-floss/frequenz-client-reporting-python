@@ -34,9 +34,7 @@ for a practical example of how to use the client.
 ### Installation
 
 ```bash
-# Choose the version you want to install
-VERSION=0.18.0
-pip install frequenz-client-reporting==$VERSION
+pip install frequenz-client-reporting
 ```
 
 
@@ -222,3 +220,35 @@ reporting-cli \
     --bounds
 ```
 In addition to the default CSV format, individual samples can also be output using the `--format iter` option.
+
+## Plotting data with matplotlib
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+# Fetch data (see examples above)
+data = [
+    sample async for sample in
+    client.receive_single_component_data(
+        microgrid_id=1,
+        component_id=100,
+        metrics=[Metric.AC_ACTIVE_POWER],
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
+        resampling_period=timedelta(seconds=60),
+    )
+]
+
+timestamps = [s.timestamp for s in data]
+values = [s.value for s in data]
+
+fig, ax = plt.subplots(figsize=(14, 5))
+ax.plot(timestamps, values)
+ax.set_title("AC Active Power")
+ax.set_ylabel("Power (W)")
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
+ax.grid(True)
+fig.tight_layout()
+plt.show()
+```
