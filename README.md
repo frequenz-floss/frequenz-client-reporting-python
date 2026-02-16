@@ -223,6 +223,10 @@ In addition to the default CSV format, individual samples can also be output usi
 
 ## Plotting data with matplotlib
 
+```bash
+pip install matplotlib
+```
+
 ```python
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
