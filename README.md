@@ -34,9 +34,7 @@ for a practical example of how to use the client.
 ### Installation
 
 ```bash
-# Choose the version you want to install
-VERSION=0.18.0
-pip install frequenz-client-reporting==$VERSION
+pip install frequenz-client-reporting
 ```
 
 
@@ -200,6 +198,34 @@ For easier data manipulation and analysis, you can convert the collected data in
 import pandas as pd
 df = pd.DataFrame(data)
 print(df)
+```
+
+## Plotting data with matplotlib
+
+```bash
+pip install matplotlib
+```
+
+Using the `data` variable from any of the examples above:
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+timestamps = [s.timestamp for s in data]
+values = [s.value for s in data]
+
+fig, ax = plt.subplots(figsize=(14, 5))
+ax.plot(timestamps, values)
+
+# Optional: customize the plot
+ax.set_title("AC Active Power")
+ax.set_ylabel("Power (W)")
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
+ax.grid(True)
+fig.tight_layout()
+
+plt.show()
 ```
 
 ## Command line client tool
