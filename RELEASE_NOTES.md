@@ -14,4 +14,4 @@
 
 ## Bug Fixes
 
-* Fixes a bug where bounds of 0 were ignored and ensure the client always returns a pair of upper and lower bounds, were unset bounds are represented by +/- infinity.
+<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
