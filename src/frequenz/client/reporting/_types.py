@@ -10,6 +10,15 @@ from datetime import datetime
 from typing import Generic, NamedTuple, Protocol, TypeVar
 
 # pylint: disable=no-name-in-module
+from frequenz.api.common.v1alpha8.metrics.metrics_pb2 import (
+    MetricSample as PbMetricSample,
+)
+from frequenz.api.common.v1alpha8.microgrid.electrical_components.electrical_components_pb2 import (
+    ElectricalComponentTelemetry as PbElectricalComponentTelemetry,
+)
+from frequenz.api.common.v1alpha8.microgrid.sensors.sensors_pb2 import (
+    SensorTelemetry as PbSensorTelemetry,
+)
 from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
     ReceiveAggregatedMicrogridComponentsDataStreamResponse as PBAggregatedStreamResponse,
 )
@@ -48,12 +57,20 @@ class _PbMgTelem(Protocol):
         """Return the microgrid ID of the telemetry batch."""
 
 
+class _PbTelem(Protocol):
+    """Protocol for telemetry items in the Reporting API client."""
+
+    @property
+    def metric_samples(self) -> MutableSequence[PbMetricSample]:
+        """Return the metric samples of the telemetry item."""
+
 
 _MgTelemT = TypeVar("_MgTelemT", bound=_PbMgTelem)
+_TelemT = TypeVar("_TelemT", bound=_PbTelem)
 
 
 @dataclass(frozen=True)
-class GenericDataBatch(Generic[_MgTelemT]):
+class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
     """Base class for batches of microgrid data (components or sensors).
 
     This class serves as a base for handling batches of data related to microgrid
@@ -77,9 +94,7 @@ class GenericDataBatch(Generic[_MgTelemT]):
         if not items:
             return True
         for item in items:
-            if not getattr(item, "metric_samples", []) and not getattr(
-                item, "states", []
-            ):
+            if not item.metric_samples and not getattr(item, "states", []):
                 return True
         return False
 
@@ -105,7 +120,7 @@ class GenericDataBatch(Generic[_MgTelemT]):
 
         for item in items:
             cid = getattr(item, self.id_attr)
-            for sample in getattr(item, "metric_samples", []):
+            for sample in item.metric_samples:
                 ts = datetime_from_proto(sample.sample_time)
                 met = enum_from_proto(sample.metric, Metric, allow_invalid=False).name
 
@@ -155,7 +170,9 @@ class GenericDataBatch(Generic[_MgTelemT]):
 
 @dataclass(frozen=True)
 class ComponentsDataBatch(
-    GenericDataBatch[PBReceiveMicrogridComponentsDataStreamResponse]
+    GenericDataBatch[
+        PBReceiveMicrogridComponentsDataStreamResponse, PbElectricalComponentTelemetry
+    ]
 ):
     """Batch of microgrid components data."""
 
@@ -174,7 +191,9 @@ class ComponentsDataBatch(
 
 
 @dataclass(frozen=True)
-class SensorsDataBatch(GenericDataBatch[PBReceiveMicrogridSensorsDataStreamResponse]):
+class SensorsDataBatch(
+    GenericDataBatch[PBReceiveMicrogridSensorsDataStreamResponse, PbSensorTelemetry]
+):
     """Batch of microgrid sensors data."""
 
     def __init__(self, data_pb: PBReceiveMicrogridSensorsDataStreamResponse):
