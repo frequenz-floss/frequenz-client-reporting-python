@@ -7,7 +7,7 @@ import math
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, NamedTuple
+from typing import Generic, NamedTuple, Protocol, TypeVar
 
 # pylint: disable=no-name-in-module
 from frequenz.api.reporting.v1alpha10.reporting_pb2 import (
@@ -40,8 +40,20 @@ class MetricSample(NamedTuple):
     value: float
 
 
+class _PbMgTelem(Protocol):
+    """Protocol for microgrid telemetry from the Reporting API client."""
+
+    @property
+    def microgrid_id(self) -> int:
+        """Return the microgrid ID of the telemetry batch."""
+
+
+
+_MgTelemT = TypeVar("_MgTelemT", bound=_PbMgTelem)
+
+
 @dataclass(frozen=True)
-class GenericDataBatch:
+class GenericDataBatch(Generic[_MgTelemT]):
     """Base class for batches of microgrid data (components or sensors).
 
     This class serves as a base for handling batches of data related to microgrid
@@ -50,7 +62,7 @@ class GenericDataBatch:
     functionality to work with bounds if applicable.
     """
 
-    _data_pb: Any
+    _data_pb: _MgTelemT
     id_attr: str
     items_attr: str
     has_bounds: bool = False
@@ -142,7 +154,9 @@ class GenericDataBatch:
 
 
 @dataclass(frozen=True)
-class ComponentsDataBatch(GenericDataBatch):
+class ComponentsDataBatch(
+    GenericDataBatch[PBReceiveMicrogridComponentsDataStreamResponse]
+):
     """Batch of microgrid components data."""
 
     def __init__(self, data_pb: PBReceiveMicrogridComponentsDataStreamResponse):
@@ -160,7 +174,7 @@ class ComponentsDataBatch(GenericDataBatch):
 
 
 @dataclass(frozen=True)
-class SensorsDataBatch(GenericDataBatch):
+class SensorsDataBatch(GenericDataBatch[PBReceiveMicrogridSensorsDataStreamResponse]):
     """Batch of microgrid sensors data."""
 
     def __init__(self, data_pb: PBReceiveMicrogridSensorsDataStreamResponse):
