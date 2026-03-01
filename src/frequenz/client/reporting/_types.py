@@ -4,10 +4,10 @@
 """Types for the Reporting API client."""
 
 import math
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, MutableSequence
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Generic, NamedTuple, Protocol, TypeVar
+from typing import Callable, Generic, NamedTuple, Protocol, TypeVar
 
 # pylint: disable=no-name-in-module
 from frequenz.api.common.v1alpha8.metrics.metrics_pb2 import (
@@ -81,7 +81,7 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
 
     _data_pb: _MgTelemT
     id_attr: str
-    items_attr: str
+    items_fetcher: Callable[[_MgTelemT], MutableSequence[_TelemT]]
     has_bounds: bool = False
 
     def is_empty(self) -> bool:
@@ -90,7 +90,7 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
         Returns:
             True if the batch contains no valid data.
         """
-        items = getattr(self._data_pb, self.items_attr, [])
+        items = self.items_fetcher(self._data_pb)
         if not items:
             return True
         for item in items:
@@ -116,7 +116,7 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
             * value: The metric value.
         """
         mid = self._data_pb.microgrid_id
-        items = getattr(self._data_pb, self.items_attr)
+        items = self.items_fetcher(self._data_pb)
 
         for item in items:
             cid = getattr(item, self.id_attr)
@@ -185,7 +185,7 @@ class ComponentsDataBatch(
         super().__init__(
             data_pb,
             id_attr="electrical_component_id",
-            items_attr="components",
+            items_fetcher=lambda pb: pb.components,
             has_bounds=True,
         )
 
@@ -202,7 +202,11 @@ class SensorsDataBatch(
         Args:
             data_pb: The underlying protobuf message.
         """
-        super().__init__(data_pb, id_attr="sensor_id", items_attr="sensors")
+        super().__init__(
+            data_pb,
+            id_attr="sensor_id",
+            items_fetcher=lambda pb: pb.sensors,
+        )
 
 
 @dataclass(frozen=True)
