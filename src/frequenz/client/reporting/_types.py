@@ -4,17 +4,35 @@
 """Types for the Reporting API client."""
 
 import math
-from collections.abc import Iterable, Iterator, MutableSequence
+from collections.abc import Iterator, MutableSequence
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Callable, Generic, NamedTuple, Protocol, TypeVar
+from typing import Any, Callable, Generic, NamedTuple, Protocol, TypeVar, cast
 
 # pylint: disable=no-name-in-module
 from frequenz.api.common.v1alpha8.metrics.metrics_pb2 import (
     MetricSample as PbMetricSample,
 )
 from frequenz.api.common.v1alpha8.microgrid.electrical_components.electrical_components_pb2 import (
+    ElectricalComponentDiagnostic as PbElectricalComponentDiagnostic,
+)
+from frequenz.api.common.v1alpha8.microgrid.electrical_components.electrical_components_pb2 import (
+    ElectricalComponentStateCode as PbElectricalComponentStateCode,
+)
+from frequenz.api.common.v1alpha8.microgrid.electrical_components.electrical_components_pb2 import (
+    ElectricalComponentStateSnapshot as PbElectricalComponentStateSnapshot,
+)
+from frequenz.api.common.v1alpha8.microgrid.electrical_components.electrical_components_pb2 import (
     ElectricalComponentTelemetry as PbElectricalComponentTelemetry,
+)
+from frequenz.api.common.v1alpha8.microgrid.sensors.sensors_pb2 import (
+    SensorDiagnostic as PbSensorDiagnostic,
+)
+from frequenz.api.common.v1alpha8.microgrid.sensors.sensors_pb2 import (
+    SensorStateCode as PbSensorStateCode,
+)
+from frequenz.api.common.v1alpha8.microgrid.sensors.sensors_pb2 import (
+    SensorStateSnapshot as PbSensorStateSnapshot,
 )
 from frequenz.api.common.v1alpha8.microgrid.sensors.sensors_pb2 import (
     SensorTelemetry as PbSensorTelemetry,
@@ -46,7 +64,13 @@ class MetricSample(NamedTuple):
     microgrid_id: int
     component_id: int | str
     metric: str
-    value: float
+    value: (
+        float
+        | PbElectricalComponentStateCode.ValueType
+        | PbSensorStateCode.ValueType
+        | PbElectricalComponentDiagnostic
+        | PbSensorDiagnostic
+    )
 
 
 class _PbMgTelem(Protocol):
@@ -64,13 +88,20 @@ class _PbTelem(Protocol):
     def metric_samples(self) -> MutableSequence[PbMetricSample]:
         """Return the metric samples of the telemetry item."""
 
+    @property
+    def state_snapshots(self) -> MutableSequence[Any]:
+        """List of state snapshots associated with this telemetry item."""
+
 
 _MgTelemT = TypeVar("_MgTelemT", bound=_PbMgTelem)
 _TelemT = TypeVar("_TelemT", bound=_PbTelem)
+_StateSnapshotT = TypeVar(
+    "_StateSnapshotT", bound=PbElectricalComponentStateSnapshot | PbSensorStateSnapshot
+)
 
 
 @dataclass(frozen=True)
-class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
+class GenericDataBatch(Generic[_MgTelemT, _TelemT, _StateSnapshotT]):
     """Base class for batches of microgrid data (components or sensors).
 
     This class serves as a base for handling batches of data related to microgrid
@@ -94,9 +125,9 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
         if not items:
             return True
         for item in items:
-            if not item.metric_samples and not getattr(item, "states", []):
-                return True
-        return False
+            if item.metric_samples or item.state_snapshots:
+                return False
+        return True
 
     # pylint: disable=too-many-locals
     # pylint: disable=too-many-branches
@@ -155,15 +186,14 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
                             ts, mid, cid, f"{met}_bound_{i}_upper", upper
                         )
 
-            for state in getattr(item, "state_snapshots", []):
+            for state in item.state_snapshots:
+                state = cast(_StateSnapshotT, state)
                 ts = datetime_from_proto(state.origin_time)
                 for category, category_items in {
-                    "state": getattr(state, "states", []),
-                    "warning": getattr(state, "warnings", []),
-                    "error": getattr(state, "errors", []),
+                    "state": state.states,
+                    "warning": state.warnings,
+                    "error": state.errors,
                 }.items():
-                    if not isinstance(category_items, Iterable):
-                        continue
                     for s in category_items:
                         yield MetricSample(ts, mid, cid, category, s)
 
@@ -171,7 +201,9 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
 @dataclass(frozen=True)
 class ComponentsDataBatch(
     GenericDataBatch[
-        PBReceiveMicrogridComponentsDataStreamResponse, PbElectricalComponentTelemetry
+        PBReceiveMicrogridComponentsDataStreamResponse,
+        PbElectricalComponentTelemetry,
+        PbElectricalComponentStateSnapshot,
     ]
 ):
     """Batch of microgrid components data."""
@@ -192,7 +224,11 @@ class ComponentsDataBatch(
 
 @dataclass(frozen=True)
 class SensorsDataBatch(
-    GenericDataBatch[PBReceiveMicrogridSensorsDataStreamResponse, PbSensorTelemetry]
+    GenericDataBatch[
+        PBReceiveMicrogridSensorsDataStreamResponse,
+        PbSensorTelemetry,
+        PbSensorStateSnapshot,
+    ]
 ):
     """Batch of microgrid sensors data."""
 
