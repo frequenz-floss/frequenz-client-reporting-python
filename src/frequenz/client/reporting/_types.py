@@ -44,7 +44,7 @@ class MetricSample(NamedTuple):
 
     timestamp: datetime
     microgrid_id: int
-    component_id: str
+    component_id: int | str
     metric: str
     value: float
 
@@ -80,7 +80,7 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
     """
 
     _data_pb: _MgTelemT
-    id_attr: str
+    id_fetcher: Callable[[_TelemT], int]
     items_fetcher: Callable[[_MgTelemT], MutableSequence[_TelemT]]
     has_bounds: bool = False
 
@@ -119,7 +119,7 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT]):
         items = self.items_fetcher(self._data_pb)
 
         for item in items:
-            cid = getattr(item, self.id_attr)
+            cid = self.id_fetcher(item)
             for sample in item.metric_samples:
                 ts = datetime_from_proto(sample.sample_time)
                 met = enum_from_proto(sample.metric, Metric, allow_invalid=False).name
@@ -184,7 +184,7 @@ class ComponentsDataBatch(
         """
         super().__init__(
             data_pb,
-            id_attr="electrical_component_id",
+            id_fetcher=lambda item: item.electrical_component_id,
             items_fetcher=lambda pb: pb.components,
             has_bounds=True,
         )
@@ -204,7 +204,7 @@ class SensorsDataBatch(
         """
         super().__init__(
             data_pb,
-            id_attr="sensor_id",
+            id_fetcher=lambda item: item.sensor_id,
             items_fetcher=lambda pb: pb.sensors,
         )
 
