@@ -73,7 +73,7 @@ class MetricSample(NamedTuple):
     )
 
 
-class _PbMgTelem(Protocol):
+class _PbMicrogridTelem(Protocol):
     """Protocol for microgrid telemetry from the Reporting API client."""
 
     @property
@@ -81,7 +81,7 @@ class _PbMgTelem(Protocol):
         """Return the microgrid ID of the telemetry batch."""
 
 
-class _PbTelem(Protocol):
+class _PbComponentTelem(Protocol):
     """Protocol for telemetry items in the Reporting API client."""
 
     @property
@@ -93,15 +93,15 @@ class _PbTelem(Protocol):
         """List of state snapshots associated with this telemetry item."""
 
 
-_MgTelemT = TypeVar("_MgTelemT", bound=_PbMgTelem)
-_TelemT = TypeVar("_TelemT", bound=_PbTelem)
+_MicrogridTelemT = TypeVar("_MicrogridTelemT", bound=_PbMicrogridTelem)
+_ComponentTelemT = TypeVar("_ComponentTelemT", bound=_PbComponentTelem)
 _StateSnapshotT = TypeVar(
     "_StateSnapshotT", bound=PbElectricalComponentStateSnapshot | PbSensorStateSnapshot
 )
 
 
 @dataclass(frozen=True)
-class GenericDataBatch(Generic[_MgTelemT, _TelemT, _StateSnapshotT]):
+class GenericDataBatch(Generic[_MicrogridTelemT, _ComponentTelemT, _StateSnapshotT]):
     """Base class for batches of microgrid data (components or sensors).
 
     This class serves as a base for handling batches of data related to microgrid
@@ -110,9 +110,9 @@ class GenericDataBatch(Generic[_MgTelemT, _TelemT, _StateSnapshotT]):
     functionality to work with bounds if applicable.
     """
 
-    _data_pb: _MgTelemT
-    id_fetcher: Callable[[_TelemT], int]
-    items_fetcher: Callable[[_MgTelemT], MutableSequence[_TelemT]]
+    _data_pb: _MicrogridTelemT
+    id_fetcher: Callable[[_ComponentTelemT], int]
+    items_fetcher: Callable[[_MicrogridTelemT], MutableSequence[_ComponentTelemT]]
     has_bounds: bool = False
 
     def is_empty(self) -> bool:
