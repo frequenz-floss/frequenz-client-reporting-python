@@ -6,7 +6,7 @@
 
 ## Upgrading
 
-- `MetricSample` values now have correct type-hints.
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ## New Features
 
