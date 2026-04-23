@@ -6,7 +6,6 @@
 This package provides a low-level interface for interacting with the reporting API.
 """
 
-
 from ._client import ReportingApiClient
 
 __all__ = ["ReportingApiClient"]
