@@ -71,7 +71,7 @@ dev-mypy = [
   "types-protobuf == 6.32.1.20251210",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-client-reporting[dev-mkdocs,dev-noxfile,dev-pytest]",
-  "pandas-stubs >= 2, < 3",  # Only required for example
+  "pandas-stubs >= 2, < 4",  # Only required for example
 ]
 dev-noxfile = [
   "nox == 2026.4.10",
