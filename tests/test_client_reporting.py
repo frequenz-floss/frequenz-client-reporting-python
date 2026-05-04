@@ -2,6 +2,7 @@
 # Copyright © 2024 Frequenz Energy-as-a-Service GmbH
 
 """Tests for the frequenz.client.reporting package."""
+
 from unittest.mock import MagicMock, patch
 
 import pytest
