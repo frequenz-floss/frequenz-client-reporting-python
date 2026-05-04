@@ -6,7 +6,7 @@
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+* Updates `black` to version 26.3.1, which fixes a security issue.
 
 ## New Features
 
