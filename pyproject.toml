@@ -68,7 +68,7 @@ dev-mkdocs = [
 dev-mypy = [
   "mypy == 1.20.2",
   "types-Markdown == 3.10.2.20260518",
-  "types-protobuf == 7.34.1.20260408",
+  "types-protobuf == 7.34.1.20260518",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-client-reporting[dev-mkdocs,dev-noxfile,dev-pytest]",
   "pandas-stubs >= 2, < 4",  # Only required for example
