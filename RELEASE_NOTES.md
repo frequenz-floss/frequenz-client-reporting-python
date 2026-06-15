@@ -6,7 +6,7 @@
 
 ## Upgrading
 
-* Updates `black` to version 26.3.1, which fixes a security issue.
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ## New Features
 
@@ -14,4 +14,4 @@
 
 ## Bug Fixes
 
-* The CLI's CSV output now quotes fields containing commas, so aggregation formulae in the `component_id` column no longer break the CSV structure.
+<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
