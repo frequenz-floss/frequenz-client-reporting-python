@@ -5,6 +5,8 @@
 
 import argparse
 import asyncio
+import csv
+import sys
 from datetime import datetime, timedelta
 from typing import AsyncIterator
 
@@ -198,11 +200,14 @@ async def run(  # noqa: DOC502
             print(sample)
 
     elif fmt == "csv":
-        # Print header
-        print(",".join(MetricSample._fields))
-        # Iterate over single metric generator and format as CSV
+        # Use the csv module so fields containing commas (e.g. aggregation
+        # formulae in component_id) are quoted per RFC 4180. Keep the LF line
+        # terminator the previous print()-based output used (csv defaults to
+        # CRLF).
+        writer = csv.writer(sys.stdout, lineterminator="\n")
+        writer.writerow(MetricSample._fields)
         async for sample in data_iter():
-            print(",".join(str(e) for e in sample))
+            writer.writerow(sample)
 
     else:
         raise ValueError(f"Invalid output format: {fmt}")
