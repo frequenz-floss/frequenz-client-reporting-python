@@ -14,4 +14,4 @@
 
 ## Bug Fixes
 
-<!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+* The CLI's CSV output now quotes fields containing commas, so aggregation formulae in the `component_id` column no longer break the CSV structure.
