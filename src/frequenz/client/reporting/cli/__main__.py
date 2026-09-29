@@ -107,6 +107,13 @@ def main() -> None:
         default=None,
     )
     args = parser.parse_args()
+    # An inverted window is a legal but empty range; warn since at the CLI it is
+    # almost always a typo.
+    if args.start and args.end and args.end < args.start:
+        print(
+            "warning: --end is before --start; no data will be returned",
+            file=sys.stderr,
+        )
     asyncio.run(
         run(
             microgrid_id=args.mid,
