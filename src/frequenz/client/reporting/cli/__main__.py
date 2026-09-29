@@ -16,6 +16,20 @@ from frequenz.client.reporting import ReportingApiClient
 from frequenz.client.reporting._types import MetricSample
 
 
+def _aware_datetime(value: str) -> datetime:
+    """Parse an ISO datetime, rejecting naive input.
+
+    A naive datetime is ambiguous: the wire encoding assumes UTC while
+    datetime.timestamp() assumes local time.
+    """
+    parsed = datetime.fromisoformat(value)
+    if parsed.tzinfo is None:
+        raise argparse.ArgumentTypeError(
+            "datetime must include a timezone offset, e.g. 2024-05-01T00:00:00+00:00"
+        )
+    return parsed
+
+
 def main() -> None:
     """Parse arguments and run the client."""
     parser = argparse.ArgumentParser()
@@ -58,15 +72,15 @@ def main() -> None:
     )
     parser.add_argument(
         "--start",
-        type=datetime.fromisoformat,
-        help="Start datetime in YYYY-MM-DDTHH:MM:SS format",
+        type=_aware_datetime,
+        help="Start datetime in ISO format with a timezone offset",
         required=False,
         default=None,
     )
     parser.add_argument(
         "--end",
-        type=datetime.fromisoformat,
-        help="End datetime in YYYY-MM-DDTHH:MM:SS format",
+        type=_aware_datetime,
+        help="End datetime in ISO format with a timezone offset",
         required=False,
         default=None,
     )
