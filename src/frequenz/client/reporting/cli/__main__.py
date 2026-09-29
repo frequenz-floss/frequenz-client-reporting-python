@@ -107,6 +107,8 @@ def main() -> None:
         default=None,
     )
     args = parser.parse_args()
+    if args.start and args.end and args.end < args.start:
+        parser.error("--end must not be before --start")
     asyncio.run(
         run(
             microgrid_id=args.mid,
