@@ -241,8 +241,8 @@ reporting-cli \
     --mid 42 \
     --cid 23 \
     --metrics AC_ACTIVE_POWER AC_REACTIVE_POWER \
-    --start 2024-05-01T00:00:00 \
-    --end 2024-05-02T00:00:00 \
+    --start 2024-05-01T00:00:00+00:00 \
+    --end 2024-05-02T00:00:00+00:00 \
     --format csv \
     --states \
     --bounds
