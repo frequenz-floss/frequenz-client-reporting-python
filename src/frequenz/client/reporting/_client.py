@@ -63,6 +63,24 @@ from ._types import (
 )
 
 
+def _reject_naive(**times: datetime | None) -> None:
+    """Raise if any given datetime is timezone-naive.
+
+    A naive datetime is ambiguous: the wire encoding assumes UTC while
+    `datetime.timestamp()` assumes local time, so the same value would denote
+    different instants.
+
+    Args:
+        **times: datetimes to check, keyed by parameter name for the error message.
+
+    Raises:
+        ValueError: if any value is a naive datetime.
+    """
+    for name, dt in times.items():
+        if dt is not None and dt.tzinfo is None:
+            raise ValueError(f"{name} must be timezone-aware, got naive {dt!r}")
+
+
 class ReportingApiClient(BaseApiClient[ReportingStub]):
     """A client for the Reporting service."""
 
@@ -145,7 +163,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         return self._stub
 
     # pylint: disable=too-many-arguments
-    def receive_single_component_data(
+    def receive_single_component_data(  # noqa: DOC502
         self,
         *,
         microgrid_id: int,
@@ -171,6 +189,9 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
         Returns:
             A receiver of `MetricSample`s.
+
+        Raises:
+            ValueError: If start_time or end_time is timezone-naive.
         """
         receiver = self._receive_microgrid_components_data_batch(
             microgrid_components=[(microgrid_id, [component_id])],
@@ -185,7 +206,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         return BatchUnrollReceiver(receiver)
 
     # pylint: disable=too-many-arguments
-    def receive_microgrid_components_data(
+    def receive_microgrid_components_data(  # noqa: DOC502
         self,
         *,
         microgrid_components: list[tuple[int, list[int]]],
@@ -210,6 +231,9 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
         Returns:
             A receiver of `MetricSample`s.
+
+        Raises:
+            ValueError: If start_time or end_time is timezone-naive.
         """
         receiver = self._receive_microgrid_components_data_batch(
             microgrid_components=microgrid_components,
@@ -237,6 +261,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         include_bounds: bool = False,
     ) -> Receiver[ComponentsDataBatch]:
         """Return a Receiver for the microgrid component data stream."""
+        _reject_naive(start_time=start_time, end_time=end_time)
         stream_key = (
             tuple((mid, tuple(cids)) for mid, cids in microgrid_components),
             tuple(metric.name for metric in metrics),
@@ -332,7 +357,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         return self._components_data_streams[stream_key].new_receiver()
 
     # pylint: disable=too-many-arguments
-    def receive_single_sensor_data(
+    def receive_single_sensor_data(  # noqa: DOC502
         self,
         *,
         microgrid_id: int,
@@ -356,6 +381,9 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
         Returns:
             A receiver of `MetricSample`s.
+
+        Raises:
+            ValueError: If start_time or end_time is timezone-naive.
         """
         receiver = self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=[(microgrid_id, [sensor_id])],
@@ -368,7 +396,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         return BatchUnrollReceiver(receiver)
 
     # pylint: disable=too-many-arguments
-    def receive_microgrid_sensors_data(
+    def receive_microgrid_sensors_data(  # noqa: DOC502
         self,
         *,
         microgrid_sensors: list[tuple[int, list[int]]],
@@ -391,6 +419,9 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
 
         Returns:
             A receiver of `MetricSample`s.
+
+        Raises:
+            ValueError: If start_time or end_time is timezone-naive.
         """
         receiver = self._receive_microgrid_sensors_data_batch(
             microgrid_sensors=microgrid_sensors,
@@ -427,6 +458,7 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
         Returns:
             A receiver of `SensorsDataBatch`s.
         """
+        _reject_naive(start_time=start_time, end_time=end_time)
         stream_key = (
             tuple((mid, tuple(sids)) for mid, sids in microgrid_sensors),
             tuple(metric.name for metric in metrics),
@@ -538,8 +570,10 @@ class ReportingApiClient(BaseApiClient[ReportingStub]):
             A receiver of `MetricSample`s.
 
         Raises:
-            ValueError: If the resampling_period is not provided.
+            ValueError: If the resampling_period is not provided, or if
+                start_time or end_time is timezone-naive.
         """
+        _reject_naive(start_time=start_time, end_time=end_time)
         stream_key = (
             microgrid_id,
             metric.name,
