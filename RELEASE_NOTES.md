@@ -16,3 +16,5 @@
 ## Bug Fixes
 
 <!-- Here goes notable bug fixes that are worth a special mention or explanation -->
+
+* Implement `close()` on the receiver returned by the streaming methods, which raised `NotImplementedError` before.

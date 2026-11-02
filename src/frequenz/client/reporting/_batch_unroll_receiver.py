@@ -72,3 +72,8 @@ class BatchUnrollReceiver(Receiver[MetricSample]):
             raise RuntimeError("consume called before ready")
         self._latest_sample = None
         return sample
+
+    @override
+    def close(self) -> None:
+        """Close the underlying batch stream."""
+        self._stream.close()
