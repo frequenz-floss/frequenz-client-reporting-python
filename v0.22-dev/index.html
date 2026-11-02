@@ -1204,7 +1204,7 @@ Details on the formula syntax can be found <a href="https://github.com/frequenz-
 <h2 id="command-line-client-tool">Command line client tool<a class="headerlink" href="#command-line-client-tool" title="Permanent link">¤</a></h2>
 <p>The package contains a command-line tool that can be used to request
 microgrid component data from the reporting API.</p>
-<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>reporting-cli<span class="w"> </span><span class="se">\</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>reporting-cli<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span>--url<span class="w"> </span>localhost:4711<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span>--auth_key<span class="o">=</span><span class="nv">$AUTH_KEY</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span>--sign_secret<span class="o">=</span><span class="nv">$SIGN_SECRET</span>
@@ -1217,7 +1217,9 @@ microgrid component data from the reporting API.</p>
 </span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span>--states<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span>--bounds
 </span></code></pre></div>
-In addition to the default CSV format, individual samples can also be output using the <code>--format iter</code> option.</p>
+<p>If neither <code>--auth_key</code> nor <code>--sign_secret</code> is given, both are read from
+<code>FREQUENZ_API_KEY</code> and <code>FREQUENZ_API_SECRET</code> as a pair.</p>
+<p>In addition to the default CSV format, individual samples can also be output using the <code>--format iter</code> option.</p>
 
 
 
