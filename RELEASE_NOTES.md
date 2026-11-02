@@ -11,6 +11,7 @@
 ## New Features
 
 - The CLI now rejects `--end` before `--start`.
+- `reporting-cli` falls back to `FREQUENZ_API_KEY` and `FREQUENZ_API_SECRET` when neither `--auth_key` nor `--sign_secret` is given.
 
 ## Bug Fixes
 

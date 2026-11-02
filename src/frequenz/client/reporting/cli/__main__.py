@@ -6,6 +6,7 @@
 import argparse
 import asyncio
 import csv
+import os
 import sys
 from datetime import datetime, timedelta
 from typing import AsyncIterator
@@ -97,7 +98,10 @@ def main() -> None:
     parser.add_argument(
         "--auth_key",
         type=str,
-        help="API key",
+        help=(
+            "API key. If neither key nor secret is given, both are read from "
+            "FREQUENZ_API_KEY and FREQUENZ_API_SECRET."
+        ),
         default=None,
     )
     parser.add_argument(
@@ -109,6 +113,16 @@ def main() -> None:
     args = parser.parse_args()
     if args.start and args.end and args.end < args.start:
         parser.error("--end must not be before --start")
+
+    # Take the fallback as a pair so a key and secret from different sources
+    # are never combined.
+    if not args.auth_key and not args.sign_secret:
+        args.auth_key = os.environ.get("FREQUENZ_API_KEY")
+        args.sign_secret = os.environ.get("FREQUENZ_API_SECRET")
+
+    if args.sign_secret and not args.auth_key:
+        parser.error("no auth key: --sign_secret was given without --auth_key")
+
     asyncio.run(
         run(
             microgrid_id=args.mid,

@@ -247,4 +247,8 @@ reporting-cli \
     --states \
     --bounds
 ```
+
+If neither `--auth_key` nor `--sign_secret` is given, both are read from
+`FREQUENZ_API_KEY` and `FREQUENZ_API_SECRET` as a pair.
+
 In addition to the default CSV format, individual samples can also be output using the `--format iter` option.
