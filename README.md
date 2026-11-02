@@ -79,11 +79,11 @@ data = [
         microgrid_id=1,  # ID of the microgrid to query
         component_id=100,  # ID of the specific component to query
         metrics=[  # List of metrics to retrieve
-            Metric.AC_ACTIVE_POWER,      # AC active power
-            Metric.AC_REACTIVE_POWER,      # AC reactive power
+            Metric.AC_POWER_ACTIVE,      # AC active power
+            Metric.AC_POWER_REACTIVE,      # AC reactive power
         ],
-        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),  # Start of query range (UTC)
-        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),    # End of query range (UTC)
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00+00:00"),  # Start of query range (UTC)
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00+00:00"),    # End of query range (UTC)
         resampling_period=timedelta(seconds=5),  # Optional: downsample data to 5-second intervals
     )
 ]
@@ -101,8 +101,8 @@ data = [
         microgrid_id=1,
         sensor_id=100,
         metrics=[Metric.SENSOR_IRRADIANCE],
-        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
-        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00+00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00+00:00"),
         resampling_period=timedelta(seconds=1),
     )
 ]
@@ -129,9 +129,9 @@ data = [
     sample async for sample in
     client.receive_microgrid_components_data(
         microgrid_components=microgrid_components,
-        metrics=[Metric.AC_ACTIVE_POWER, Metric.AC_REACTIVE_POWER],
-        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
-        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
+        metrics=[Metric.AC_POWER_ACTIVE, Metric.AC_POWER_REACTIVE],
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00+00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00+00:00"),
         resampling_period=timedelta(seconds=1),
         include_states=False, # Set to True to include state data
         include_bounds=False, # Set to True to include metric bounds data
@@ -160,8 +160,8 @@ data = [
     client.receive_microgrid_sensors_data(
         microgrid_sensors=microgrid_sensors,
         metrics=[Metric.SENSOR_IRRADIANCE],
-        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
-        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00+00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00+00:00"),
         resampling_period=timedelta(seconds=1),
         include_states=False, # Set to True to include state data
     )
@@ -181,10 +181,10 @@ data = [
     sample async for sample in
     client.receive_aggregated_data(
         microgrid_id=microgrid_id,
-        metric=Metric.AC_ACTIVE_POWER,
+        metric=Metric.AC_POWER_ACTIVE,
         aggregation_formula=formula,
-        start_time=datetime.fromisoformat("2024-05-01T00:00:00"),
-        end_time=datetime.fromisoformat("2024-05-02T00:00:00"),
+        start_time=datetime.fromisoformat("2024-05-01T00:00:00+00:00"),
+        end_time=datetime.fromisoformat("2024-05-02T00:00:00+00:00"),
         resampling_period=resampling_period,
     )
 ]
@@ -240,9 +240,9 @@ reporting-cli \
     --sign_secret=$SIGN_SECRET
     --mid 42 \
     --cid 23 \
-    --metrics AC_ACTIVE_POWER AC_REACTIVE_POWER \
-    --start 2024-05-01T00:00:00 \
-    --end 2024-05-02T00:00:00 \
+    --metrics AC_POWER_ACTIVE AC_POWER_REACTIVE \
+    --start 2024-05-01T00:00:00+00:00 \
+    --end 2024-05-02T00:00:00+00:00 \
     --format csv \
     --states \
     --bounds
