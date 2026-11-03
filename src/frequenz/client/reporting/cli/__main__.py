@@ -121,7 +121,7 @@ def main() -> None:
         args.sign_secret = os.environ.get("FREQUENZ_API_SECRET")
 
     if args.sign_secret and not args.auth_key:
-        parser.error("no auth key: --sign_secret was given without --auth_key")
+        parser.error("no auth key: a sign secret was given without an auth key")
 
     asyncio.run(
         run(
